@@ -60,18 +60,18 @@ The limit applies to events that arrive from now on; runs that already exist are
 gitea_put_file() {
   local branch="$1" file="$2" path="$3" message="$4" sha method body
   sha="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password "$1" | jq -r ".sha // empty"' \
-    _ "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/$path?ref=$branch")"
+    _ "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/$path?ref=$branch")"
   body="{\"branch\":\"$branch\",\"message\":\"$message\",\"content\":\"$(base64 < "$file" | tr -d '\n')\""
   if [ -n "$sha" ]; then method=PUT; body="$body,\"sha\":\"$sha\"}"; else method=POST; body="$body}"; fi
   kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password -X "$1" -H "Content-Type: application/json" --data "$2" "$3" | jq -r ".commit.sha"' \
-    _ "$method" "$body" "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/$path"
+    _ "$method" "$body" "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/$path"
 }
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/branches --data '{"new_branch_name":"feature-queue","old_branch_name":"main"}'
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/branches --data '{"new_branch_name":"feature-queue","old_branch_name":"main"}'
 printf 'Queue test.\n' > queue.txt
 gitea_put_file feature-queue queue.txt docs/queue.md "Test the queue"
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls --data '{"head":"feature-queue","base":"main","title":"Test the queue"}'
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls --data '{"head":"feature-queue","base":"main","title":"Test the queue"}'
 ```
 
 Now watch the states. Run this a few times over the next minute:

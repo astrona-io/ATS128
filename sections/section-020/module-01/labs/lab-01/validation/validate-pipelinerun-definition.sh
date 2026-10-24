@@ -5,7 +5,7 @@
 set -uo pipefail
 
 NS="starfleet"
-GITEA_API="http://gitea-http.gitea:3000/api/v1"
+GITEA_API="http://gitea-http.gitea.svc.cluster.local:3000/api/v1"
 OWNER_AUTH="starfleet:starfleet-password"   # lab-only credentials
 REPO_PATH="/repos/starfleet/bridge-app"
 CHECK_PREFIX="Pipelines as Code CI"

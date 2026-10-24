@@ -19,7 +19,7 @@ INSTALL_PAC="no"   # yes or no
 CREATE_CADET="no"   # yes or no: a second Gitea user without rights on the repository
 LOG="[lab]"
 
-GITEA_API="http://gitea-http.gitea:3000/api/v1"
+GITEA_API="http://gitea-http.gitea.svc.cluster.local:3000/api/v1"
 OWNER="starfleet"
 OWNER_PASSWORD="starfleet-password"   # lab-only credentials
 
@@ -199,7 +199,7 @@ kubectl -n gitea rollout status deployment/gitea --timeout=300s
 kubectl -n gitea rollout status deployment/tester --timeout=300s
 gitea_ready=false
 for _ in $(seq 1 60); do
-  health="$(kubectl -n gitea exec deploy/tester -- curl -fsS http://gitea-http.gitea:3000/api/healthz 2>/dev/null || true)"
+  health="$(kubectl -n gitea exec deploy/tester -- curl -fsS http://gitea-http.gitea.svc.cluster.local:3000/api/healthz 2>/dev/null || true)"
   case "$health" in
     *'"status"'*'pass'*) gitea_ready=true; break ;;
   esac

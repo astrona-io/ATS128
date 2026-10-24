@@ -22,17 +22,17 @@ Gitea never shows a webhook's secret, and it cannot change the secret of an exis
 ```sh
 NEW_SECRET="$(head -c 24 /dev/urandom | base64 | tr -d '/+=' | head -c 32)"
 kubectl -n starfleet patch secret gitea-webhook-config --type merge -p "{\"stringData\":{\"webhook.secret\":\"$NEW_SECRET\"}}"
-kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/hooks | jq -r ".[] | \"\(.id) \(.config.url)\""'
+kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/hooks | jq -r ".[] | \"\(.id) \(.config.url)\""'
 ```
 
 Delete the webhook with the `id` from the list, and create it again with the new secret:
 
 ```sh
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X DELETE \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/hooks/<ID>
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/hooks/<ID>
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password \
   -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/hooks \
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/hooks \
   --data "{\"type\":\"gitea\",\"active\":true,\"branch_filter\":\"*\",\"events\":[\"push\",\"pull_request\",\"pull_request_sync\",\"pull_request_comment\"],\"config\":{\"url\":\"http://pipelines-as-code-controller.pipelines-as-code.svc.cluster.local:8080\",\"content_type\":\"json\",\"secret\":\"$NEW_SECRET\"}}"
 ```
 
@@ -44,15 +44,15 @@ The old pull request event was dropped, but a comment is a new event. Comment `/
 
 ```sh
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/issues/1/comments --data '{"body":"/ok-to-test"}'
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/issues/1/comments --data '{"body":"/ok-to-test"}'
 kubectl get pipelineruns -n starfleet -L pipelinesascode.tekton.dev/sender,pipelinesascode.tekton.dev/event-type
 ```
 
 A `pull-request-...` run starts. It clones `{{ source_url }}`, the fork `cadet/bridge-app`, at `cadet`'s commit. When it has finished, read the status:
 
 ```sh
-SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls/1 | jq -r .head.sha')"
-kubectl -n gitea exec deploy/tester -- sh -c "curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/commits/$SHA/statuses | jq -r '.[] | \"\(.context): \(.status) - \(.description)\"'"
+SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls/1 | jq -r .head.sha')"
+kubectl -n gitea exec deploy/tester -- sh -c "curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/commits/$SHA/statuses | jq -r '.[] | \"\(.context): \(.status) - \(.description)\"'"
 ```
 
 The newest line for `Pipelines as Code CI / pull-request` is `success`.
@@ -73,7 +73,7 @@ Commit it to the top of `main` (a new file, so POST works):
 ```sh
 CONTENT="$(base64 < OWNERS | tr -d '\n')"
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/OWNERS \
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/OWNERS \
   --data "{\"branch\":\"main\",\"message\":\"Trust cadet as a reviewer\",\"content\":\"$CONTENT\"}"
 ```
 

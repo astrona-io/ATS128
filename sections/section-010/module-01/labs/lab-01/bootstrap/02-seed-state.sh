@@ -27,7 +27,7 @@ apply_with_retry() {
 }
 
 
-GITEA_API="http://gitea-http.gitea:3000/api/v1"
+GITEA_API="http://gitea-http.gitea.svc.cluster.local:3000/api/v1"
 GITEA_URL="http://gitea-http.gitea.svc.cluster.local:3000"
 OWNER="starfleet"
 OWNER_AUTH="starfleet:starfleet-password"   # lab-only credentials

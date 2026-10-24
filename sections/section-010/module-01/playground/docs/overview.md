@@ -21,11 +21,11 @@ Paste these once in each new terminal. `gitea_get` sends a GET request to the Gi
 ```sh
 gitea_get() {
   kubectl -n gitea exec deploy/tester -- sh -c \
-    'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea:3000/api/v1$1" | jq -r "$2"' _ "$1" "${2:-.}"
+    'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea.svc.cluster.local:3000/api/v1$1" | jq -r "$2"' _ "$1" "${2:-.}"
 }
 gitea_send() {
   kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password \
-    -X "$1" -H 'Content-Type: application/json' --data "$3" "http://gitea-http.gitea:3000/api/v1$2"
+    -X "$1" -H 'Content-Type: application/json' --data "$3" "http://gitea-http.gitea.svc.cluster.local:3000/api/v1$2"
 }
 show_runs() {
   kubectl get pipelineruns -n starfleet -L pipelinesascode.tekton.dev/event-type,pipelinesascode.tekton.dev/sha

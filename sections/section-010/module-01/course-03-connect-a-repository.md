@@ -68,7 +68,7 @@ Create the webhook with the Gitea API from the `tester` pod. The events `pull_re
 ```sh
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password \
   -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/hooks \
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/hooks \
   --data '{"type":"gitea","active":true,"branch_filter":"*","events":["push","pull_request","pull_request_sync","pull_request_comment"],"config":{"url":"http://pipelines-as-code-controller.pipelines-as-code.svc.cluster.local:8080","content_type":"json","secret":"bridge-webhook-secret"}}'
 ```
 
@@ -81,7 +81,7 @@ Everything is connected, so open a pull request from `feature-hello` into `main`
 ```sh
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password \
   -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls \
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls \
   --data '{"head":"feature-hello","base":"main","title":"Bump the version to 1.5.0"}'
 ```
 
@@ -96,8 +96,8 @@ After a few seconds, a PipelineRun named `pull-request-` plus five random charac
 Now look at the result from the Git side. The commit statuses of the head commit belong to Gitea:
 
 ```sh
-SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls/1 | jq -r .head.sha')"
-kubectl -n gitea exec deploy/tester -- sh -c "curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/commits/$SHA/statuses | jq -r '.[] | \"\(.context): \(.status) (\(.description))\"'"
+SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls/1 | jq -r .head.sha')"
+kubectl -n gitea exec deploy/tester -- sh -c "curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/commits/$SHA/statuses | jq -r '.[] | \"\(.context): \(.status) (\(.description))\"'"
 ```
 
 The newest line reads `Pipelines as Code CI / pull-request: success`, and an older line shows the `pending` status that the controller wrote when the run started. The watcher wrote the final status when the run finished. Pipelines-as-Code also posted a comment on the pull request with the result of each task.

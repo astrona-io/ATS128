@@ -20,7 +20,7 @@ See it with the Gitea user `cadet`, who has no rights on `starfleet/bridge-app`.
 ```sh
 cadet_api() {
   kubectl -n gitea exec deploy/tester -- curl -sS -u cadet:cadet-password \
-    -X "$1" -H 'Content-Type: application/json' --data "$3" "http://gitea-http.gitea:3000/api/v1$2"
+    -X "$1" -H 'Content-Type: application/json' --data "$3" "http://gitea-http.gitea.svc.cluster.local:3000/api/v1$2"
 }
 cadet_api POST /repos/starfleet/bridge-app/forks '{}'
 cadet_api POST /repos/cadet/bridge-app/branches '{"new_branch_name":"docs-typo","old_branch_name":"main"}'
@@ -32,8 +32,8 @@ cadet_api POST /repos/starfleet/bridge-app/pulls '{"head":"cadet:docs-typo","bas
 The last answer shows the new pull request and its `number`. No PipelineRun appears in `starfleet`. Read the pull request's statuses and comments as `starfleet`; replace `<NUMBER>` with the number Gitea returned:
 
 ```sh
-kubectl -n gitea exec deploy/tester -- sh -c 'sha="$(curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls/$1 | jq -r .head.sha)"; curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/commits/$sha/statuses" | jq -r ".[] | \"\(.context): \(.status) - \(.description)\""' _ <NUMBER>
-kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/issues/$1/comments | jq -r ".[].body"' _ <NUMBER>
+kubectl -n gitea exec deploy/tester -- sh -c 'sha="$(curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls/$1 | jq -r .head.sha)"; curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/commits/$sha/statuses" | jq -r ".[] | \"\(.context): \(.status) - \(.description)\""' _ <NUMBER>
+kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/issues/$1/comments | jq -r ".[].body"' _ <NUMBER>
 ```
 
 The status is `Pipelines as Code CI: pending - Pending approval, waiting for an /ok-to-test`, and the comment says that `cadet` is not allowed to trigger CI.
@@ -53,7 +53,7 @@ Pipelines-as-Code checks the comment's author with the same rules as above. A co
 
 ```sh
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/issues/<NUMBER>/comments --data '{"body":"/ok-to-test"}'
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/issues/<NUMBER>/comments --data '{"body":"/ok-to-test"}'
 kubectl get pipelineruns -n starfleet -L pipelinesascode.tekton.dev/sender,pipelinesascode.tekton.dev/event-type
 ```
 

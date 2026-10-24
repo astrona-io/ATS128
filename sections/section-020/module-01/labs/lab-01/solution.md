@@ -10,7 +10,7 @@ Pipelines-as-Code reads `.tekton` from the pull request's branch, so read it fro
 
 ```sh
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password \
-  "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/raw/.tekton/pull-request.yaml?ref=feature-shields" > pull-request.yaml
+  "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/raw/.tekton/pull-request.yaml?ref=feature-shields" > pull-request.yaml
 grep -n 'on-event\|on-target-branch\|value:' pull-request.yaml
 ```
 
@@ -74,6 +74,9 @@ spec:
               script: |
                 #!/bin/sh
                 set -eu
+                # The workspace folder belongs to another user than this step, so git
+                # must be told that the clone is safe to use.
+                git config --global --add safe.directory /workspace/source
                 git clone --quiet "$(params.repo_url)" source
                 cd source
                 git checkout --quiet "$(params.revision)"
@@ -93,10 +96,10 @@ spec:
 An existing file needs its blob `sha` for an update (Gitea answers `422` to a POST on an existing file). Read the `sha`, then send the new content with PUT:
 
 ```sh
-FILE_SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/pull-request.yaml?ref=feature-shields" | jq -r .sha')"
+FILE_SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/pull-request.yaml?ref=feature-shields" | jq -r .sha')"
 CONTENT="$(base64 < pull-request.yaml | tr -d '\n')"
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X PUT -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/pull-request.yaml \
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/pull-request.yaml \
   --data "{\"branch\":\"feature-shields\",\"message\":\"Match pull requests into main and test the pushed commit\",\"sha\":\"$FILE_SHA\",\"content\":\"$CONTENT\"}"
 ```
 
@@ -105,10 +108,10 @@ The new commit updates pull request #1, so Gitea sends a `pull_request` event, a
 ## Step 4: Check the run and the status
 
 ```sh
-SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls/1 | jq -r .head.sha')"
+SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls/1 | jq -r .head.sha')"
 kubectl get pipelineruns -n starfleet -l "pipelinesascode.tekton.dev/sha=$SHA"
 kubectl get pipelineruns -n starfleet -l "pipelinesascode.tekton.dev/sha=$SHA" -o jsonpath='{.items[0].status.results[0].value}{"\n"}'
-kubectl -n gitea exec deploy/tester -- sh -c "curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/commits/$SHA/statuses | jq -r '.[] | \"\(.context): \(.status)\"'"
+kubectl -n gitea exec deploy/tester -- sh -c "curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/commits/$SHA/statuses | jq -r '.[] | \"\(.context): \(.status)\"'"
 ```
 
 The run ends with `SUCCEEDED` `True`, its result `commit` equals `$SHA`, and the newest status is `Pipelines as Code CI / pull-request: success`.

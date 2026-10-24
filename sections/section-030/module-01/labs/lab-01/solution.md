@@ -53,7 +53,7 @@ The limit applies only to new events. Commit a new file to the pull request bran
 ```sh
 CONTENT="$(printf 'Calibration run after setting concurrency_limit.\n' | base64 | tr -d '\n')"
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/docs/calibration.txt \
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/docs/calibration.txt \
   --data "{\"branch\":\"feature-sensors\",\"message\":\"Record the sensor calibration\",\"content\":\"$CONTENT\"}"
 ```
 
@@ -71,8 +71,8 @@ The two new runs appear together. `lint` is `started` while `unit-test` is `queu
 ```sh
 kubectl get pipelineruns -n starfleet --sort-by=.metadata.creationTimestamp \
   -o custom-columns=NAME:.metadata.name,START:.status.startTime,DONE:.status.completionTime
-SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls/1 | jq -r .head.sha')"
-kubectl -n gitea exec deploy/tester -- sh -c "curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/commits/$SHA/statuses | jq -r '.[] | \"\(.context): \(.status)\"'"
+SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls/1 | jq -r .head.sha')"
+kubectl -n gitea exec deploy/tester -- sh -c "curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/commits/$SHA/statuses | jq -r '.[] | \"\(.context): \(.status)\"'"
 ```
 
 The newest `unit-test` run starts at or after the time the newest `lint` run completed. The statuses include `Pipelines as Code CI / lint: success` and `Pipelines as Code CI / unit-test: success`.

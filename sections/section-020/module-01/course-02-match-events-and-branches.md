@@ -19,9 +19,9 @@ See both annotations work in your playground. Create a branch and open a pull re
 
 ```sh
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/branches --data '{"new_branch_name":"feature-docs","old_branch_name":"main"}'
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/branches --data '{"new_branch_name":"feature-docs","old_branch_name":"main"}'
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls --data '{"head":"feature-docs","base":"main","title":"Improve the docs"}'
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls --data '{"head":"feature-docs","base":"main","title":"Improve the docs"}'
 kubectl get pipelineruns -n starfleet -L pipelinesascode.tekton.dev/original-prname,pipelinesascode.tekton.dev/event-type
 ```
 
@@ -58,14 +58,14 @@ Because Pipelines-as-Code reads `.tekton` from the pull request's own branch, yo
 gitea_put_file() {
   local branch="$1" file="$2" path="$3" message="$4" sha method body
   sha="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password "$1" | jq -r ".sha // empty"' \
-    _ "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/$path?ref=$branch")"
+    _ "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/$path?ref=$branch")"
   body="{\"branch\":\"$branch\",\"message\":\"$message\",\"content\":\"$(base64 < "$file" | tr -d '\n')\""
   if [ -n "$sha" ]; then method=PUT; body="$body,\"sha\":\"$sha\"}"; else method=POST; body="$body}"; fi
   kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password -X "$1" -H "Content-Type: application/json" --data "$2" "$3" | jq -r ".commit.sha"' \
-    _ "$method" "$body" "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/$path"
+    _ "$method" "$body" "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/$path"
 }
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password \
-  "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/raw/.tekton/pull-request.yaml?ref=feature-docs" > pull-request.yaml
+  "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/raw/.tekton/pull-request.yaml?ref=feature-docs" > pull-request.yaml
 sed -i.bak 's/on-target-branch: "\[main\]"/on-target-branch: "[main, release-*]"/' pull-request.yaml
 gitea_put_file feature-docs pull-request.yaml .tekton/pull-request.yaml "Also test pull requests into release branches"
 ```

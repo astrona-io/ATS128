@@ -26,20 +26,20 @@ Paste these once in each new terminal. `gitea_raw` prints one file of the reposi
 ```sh
 gitea_raw() {
   kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password \
-    "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/raw/$1?ref=${2:-main}"
+    "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/raw/$1?ref=${2:-main}"
 }
 gitea_send() {
   kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password \
-    -X "$1" -H 'Content-Type: application/json' --data "$3" "http://gitea-http.gitea:3000/api/v1$2"
+    -X "$1" -H 'Content-Type: application/json' --data "$3" "http://gitea-http.gitea.svc.cluster.local:3000/api/v1$2"
 }
 gitea_put_file() {
   local branch="$1" file="$2" path="$3" message="$4" sha method body
   sha="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password "$1" | jq -r ".sha // empty"' \
-    _ "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/$path?ref=$branch")"
+    _ "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/$path?ref=$branch")"
   body="{\"branch\":\"$branch\",\"message\":\"$message\",\"content\":\"$(base64 < "$file" | tr -d '\n')\""
   if [ -n "$sha" ]; then method=PUT; body="$body,\"sha\":\"$sha\"}"; else method=POST; body="$body}"; fi
   kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password -X "$1" -H "Content-Type: application/json" --data "$2" "$3" | jq -r ".commit.sha"' \
-    _ "$method" "$body" "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/$path"
+    _ "$method" "$body" "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/$path"
 }
 show_runs() {
   kubectl get pipelineruns -n starfleet -L pipelinesascode.tekton.dev/original-prname,pipelinesascode.tekton.dev/event-type,pipelinesascode.tekton.dev/sha

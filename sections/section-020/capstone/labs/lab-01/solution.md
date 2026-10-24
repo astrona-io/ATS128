@@ -9,10 +9,10 @@ The grader checks three things: the `.tekton` folder on `main` (unique names, on
 List the files and print each one:
 
 ```sh
-kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton?ref=main" | jq -r ".[].path"'
+kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton?ref=main" | jq -r ".[].path"'
 for file in push.yaml push-copy.yaml; do
   kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password \
-    "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/raw/.tekton/$file?ref=main" | sed -n '1,14p'
+    "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/raw/.tekton/$file?ref=main" | sed -n '1,14p'
 done
 ```
 
@@ -28,9 +28,9 @@ There are three files: `pull-request.yaml`, `push.yaml` and `push-copy.yaml`. Tw
 Deleting a file through the Gitea API needs its blob `sha`:
 
 ```sh
-FILE_SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/push-copy.yaml?ref=main" | jq -r .sha')"
+FILE_SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/push-copy.yaml?ref=main" | jq -r .sha')"
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X DELETE -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/push-copy.yaml \
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/push-copy.yaml \
   --data "{\"branch\":\"main\",\"message\":\"Remove the old copy of the push pipeline\",\"sha\":\"$FILE_SHA\"}"
 ```
 
@@ -91,6 +91,9 @@ spec:
               script: |
                 #!/bin/sh
                 set -eu
+                # The workspace folder belongs to another user than this step, so git
+                # must be told that the clone is safe to use.
+                git config --global --add safe.directory /workspace/source
                 git clone --quiet "$(params.repo_url)" source
                 cd source
                 git checkout --quiet "$(params.revision)"
@@ -108,10 +111,10 @@ spec:
 Commit it to `main` with PUT and the file's `sha`:
 
 ```sh
-FILE_SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/push.yaml?ref=main" | jq -r .sha')"
+FILE_SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/push.yaml?ref=main" | jq -r .sha')"
 CONTENT="$(base64 < push.yaml | tr -d '\n')"
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X PUT -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/push.yaml \
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/push.yaml \
   --data "{\"branch\":\"main\",\"message\":\"Run the push pipeline for main and release branches\",\"sha\":\"$FILE_SHA\",\"content\":\"$CONTENT\"}"
 ```
 

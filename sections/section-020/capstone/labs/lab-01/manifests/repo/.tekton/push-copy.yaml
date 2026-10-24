@@ -46,6 +46,9 @@ spec:
               script: |
                 #!/bin/sh
                 set -eu
+                # The workspace folder belongs to another user than this step, so git
+                # must be told that the clone is safe to use.
+                git config --global --add safe.directory /workspace/source
                 git clone --quiet "$(params.repo_url)" source
                 cd source
                 git checkout --quiet "$(params.revision)"

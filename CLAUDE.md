@@ -342,6 +342,16 @@ Every step uses a `script`. The PipelineRun result `commit` (the output of
 
 ### Environment facts the text must respect
 
+- **Always call Gitea by its full name,**
+  `http://gitea-http.gitea.svc.cluster.local:3000`. Gitea builds the clone and
+  HTML URLs in a webhook payload from the `Host` of the API request that caused
+  the event, not only from `ROOT_URL` (seen live: a pull request opened through
+  `gitea-http.gitea:3000` sent that short URL). Pipelines-as-Code then finds no
+  Repository, whose `spec.url` uses the full name, and starts nothing.
+- **Clone steps mark the clone as safe.** The workspace folder belongs to a
+  different user than the `alpine/git` step, so `git checkout` stops with
+  `detected dubious ownership` unless the step first runs
+  `git config --global --add safe.directory /workspace/source`.
 - **Install from the release manifest:**
   `kubectl apply -f https://github.com/tektoncd/pipelines-as-code/releases/download/v0.52.0/release.k8s.yaml`
   (`release.yaml` in the same release is for OpenShift). The upstream page

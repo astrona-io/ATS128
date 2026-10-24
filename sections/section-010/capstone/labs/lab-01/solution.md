@@ -61,18 +61,18 @@ kubectl apply -f repository-bridge-app.yaml
 List the webhooks of the repository:
 
 ```sh
-kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/hooks | jq -r ".[] | \"\(.id) \(.type) \(.config.url)\""'
+kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/hooks | jq -r ".[] | \"\(.id) \(.type) \(.config.url)\""'
 ```
 
 The webhook targets port **8082**, the container port of the controller. The Service `pipelines-as-code-controller` listens on 8080, so Gitea's delivery fails before any event reaches Pipelines-as-Code. Gitea cannot change the secret of an existing webhook, and you need the secret from the Secret anyway, so delete the webhook (use the `id` from the list) and create it again:
 
 ```sh
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X DELETE \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/hooks/<ID>
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/hooks/<ID>
 WEBHOOK_SECRET="$(kubectl -n starfleet get secret gitea-webhook-config -o jsonpath='{.data.webhook\.secret}' | base64 -d)"
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password \
   -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/hooks \
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/hooks \
   --data "{\"type\":\"gitea\",\"active\":true,\"branch_filter\":\"*\",\"events\":[\"push\",\"pull_request\",\"pull_request_sync\",\"pull_request_comment\"],\"config\":{\"url\":\"http://pipelines-as-code-controller.pipelines-as-code.svc.cluster.local:8080\",\"content_type\":\"json\",\"secret\":\"$WEBHOOK_SECRET\"}}"
 ```
 
@@ -82,17 +82,17 @@ Gitea sent the pull request event long ago, to the wrong port. Close and reopen 
 
 ```sh
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X PATCH -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls/1 --data '{"state":"closed"}'
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls/1 --data '{"state":"closed"}'
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X PATCH -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls/1 --data '{"state":"open"}'
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls/1 --data '{"state":"open"}'
 kubectl get pipelineruns -n starfleet -L pipelinesascode.tekton.dev/event-type,pipelinesascode.tekton.dev/sha
 ```
 
 A PipelineRun `pull-request-...` appears in `starfleet` and ends with `SUCCEEDED` `True`. If nothing appears, read `kubectl -n pipelines-as-code logs deploy/pipelines-as-code-controller --since=5m`. Then read the commit status:
 
 ```sh
-SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls/1 | jq -r .head.sha')"
-kubectl -n gitea exec deploy/tester -- sh -c "curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/commits/$SHA/statuses | jq -r '.[] | \"\(.context): \(.status)\"'"
+SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls/1 | jq -r .head.sha')"
+kubectl -n gitea exec deploy/tester -- sh -c "curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/commits/$SHA/statuses | jq -r '.[] | \"\(.context): \(.status)\"'"
 ```
 
 ## Step 5: Submit

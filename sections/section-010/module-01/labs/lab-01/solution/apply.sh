@@ -5,7 +5,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-GITEA_API="http://gitea-http.gitea:3000/api/v1"
+GITEA_API="http://gitea-http.gitea.svc.cluster.local:3000/api/v1"
 OWNER_AUTH="starfleet:starfleet-password"   # lab-only credentials
 REPO_PATH="/repos/starfleet/bridge-app"
 CONTROLLER_URL="http://pipelines-as-code-controller.pipelines-as-code.svc.cluster.local:8080"

@@ -15,7 +15,7 @@ Your playground already holds such a repository. The `tester` pod in the namespa
 ```sh
 gitea_get() {
   kubectl -n gitea exec deploy/tester -- sh -c \
-    'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea:3000/api/v1$1" | jq -r "$2"' _ "$1" "${2:-.}"
+    'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea.svc.cluster.local:3000/api/v1$1" | jq -r "$2"' _ "$1" "${2:-.}"
 }
 ```
 
@@ -24,7 +24,7 @@ List the files of the `.tekton` folder on `main`, then print the one file it hol
 ```sh
 gitea_get '/repos/starfleet/bridge-app/contents/.tekton?ref=main' '.[].path'
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password \
-  'http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/raw/.tekton/pull-request.yaml?ref=main'
+  'http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/raw/.tekton/pull-request.yaml?ref=main'
 ```
 
 The first command prints `.tekton/pull-request.yaml`. The second prints a `PipelineRun` named `pull-request`. Its annotations `pipelinesascode.tekton.dev/on-event: "[pull_request]"` and `pipelinesascode.tekton.dev/on-target-branch: "[main]"` say: run me for pull requests into `main`. Its parameters take the values `{{ source_url }}` and `{{ revision }}`. These are dynamic variables: Pipelines-as-Code replaces them with the repository URL and the commit of the event before it creates the run.

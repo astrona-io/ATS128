@@ -67,7 +67,7 @@ Create a webhook of type `gitea` that targets the Service port 8080:
 ```sh
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password \
   -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/hooks \
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/hooks \
   --data '{"type":"gitea","active":true,"branch_filter":"*","events":["push","pull_request","pull_request_sync","pull_request_comment"],"config":{"url":"http://pipelines-as-code-controller.pipelines-as-code.svc.cluster.local:8080","content_type":"json","secret":"bridge-webhook-secret"}}'
 ```
 
@@ -76,7 +76,7 @@ kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password 
 ```sh
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password \
   -X POST -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls \
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls \
   --data '{"head":"feature-hello","base":"main","title":"Bump the version to 1.5.0"}'
 ```
 
@@ -90,17 +90,17 @@ tkn pac describe bridge-app -n starfleet
 Then read the commit status in Gitea:
 
 ```sh
-SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls/1 | jq -r .head.sha')"
-kubectl -n gitea exec deploy/tester -- sh -c "curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/commits/$SHA/statuses | jq -r '.[] | \"\(.context): \(.status)\"'"
+SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls/1 | jq -r .head.sha')"
+kubectl -n gitea exec deploy/tester -- sh -c "curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/commits/$SHA/statuses | jq -r '.[] | \"\(.context): \(.status)\"'"
 ```
 
 The newest line is `Pipelines as Code CI / pull-request: success`. If no PipelineRun appears, read `kubectl -n pipelines-as-code logs deploy/pipelines-as-code-controller --since=5m`. If the pull request was opened before the webhook existed, close and reopen it to send a new event:
 
 ```sh
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X PATCH -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls/1 --data '{"state":"closed"}'
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls/1 --data '{"state":"closed"}'
 kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X PATCH -H 'Content-Type: application/json' \
-  http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/pulls/1 --data '{"state":"open"}'
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/pulls/1 --data '{"state":"open"}'
 ```
 
 ## Step 6: Submit
@@ -128,5 +128,5 @@ astrona submit -c sections/section-010/module-01/labs/lab-01
 ## Practice on your own
 
 - Push a commit to `feature-hello` and watch a second PipelineRun appear for the new head commit.
-- Read the comment Pipelines-as-Code posted on the pull request with `kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password http://gitea-http.gitea:3000/api/v1/repos/starfleet/bridge-app/issues/1/comments`.
+- Read the comment Pipelines-as-Code posted on the pull request with `kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/issues/1/comments`.
 - Compare `tkn pac list -n starfleet` with `kubectl get repositories -n starfleet`.
