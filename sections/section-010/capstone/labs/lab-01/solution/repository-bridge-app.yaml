@@ -1,0 +1,18 @@
+# Reference end state: the Repository lives in starfleet and reads the token
+# from the key "token" of the existing Secret gitea-webhook-config.
+apiVersion: pipelinesascode.tekton.dev/v1alpha1
+kind: Repository
+metadata:
+  name: bridge-app
+  namespace: starfleet
+spec:
+  url: "http://gitea-http.gitea.svc.cluster.local:3000/starfleet/bridge-app"
+  git_provider:
+    type: gitea
+    url: "http://gitea-http.gitea.svc.cluster.local:3000"
+    secret:
+      name: gitea-webhook-config
+      key: token
+    webhook_secret:
+      name: gitea-webhook-config
+      key: webhook.secret

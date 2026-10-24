@@ -1,0 +1,61 @@
+# Pipelines-as-Code runs this PipelineRun for every push to main.
+# The values of the parameters below are dynamic variables (repo_url and
+# revision): Pipelines-as-Code replaces them with the repository URL and the pushed commit SHA.
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: push
+  annotations:
+    pipelinesascode.tekton.dev/on-event: "[push]"
+    pipelinesascode.tekton.dev/on-target-branch: "[main]"
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+spec:
+  params:
+    - name: repo_url
+      value: "{{ repo_url }}"
+    - name: revision
+      value: "{{ revision }}"
+  pipelineSpec:
+    params:
+      - name: repo_url
+        type: string
+      - name: revision
+        type: string
+    results:
+      - name: commit
+        value: $(tasks.checkout-and-test.results.commit)
+    tasks:
+      - name: checkout-and-test
+        params:
+          - name: repo_url
+            value: $(params.repo_url)
+          - name: revision
+            value: $(params.revision)
+        taskSpec:
+          params:
+            - name: repo_url
+              type: string
+            - name: revision
+              type: string
+          results:
+            - name: commit
+              description: The commit SHA that was checked out
+          steps:
+            - name: clone
+              image: alpine/git:v2.52.0
+              workingDir: /workspace
+              script: |
+                #!/bin/sh
+                set -eu
+                git clone --quiet "$(params.repo_url)" source
+                cd source
+                git checkout --quiet "$(params.revision)"
+                git rev-parse HEAD | tr -d '\n' > "$(results.commit.path)"
+                echo "Checked out $(params.revision)"
+            - name: test
+              image: busybox:1.37.0
+              workingDir: /workspace/source
+              script: |
+                #!/bin/sh
+                set -eu
+                sh app/status.sh

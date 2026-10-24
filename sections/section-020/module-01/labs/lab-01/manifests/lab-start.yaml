@@ -1,0 +1,114 @@
+# Starting workloads for every ATS128 environment:
+# - the namespace starfleet, where the Repository and every PipelineRun live,
+# - the in-cluster Git server Gitea (HTTP on port 3000, no TLS, lab-only),
+# - a tester client pod with curl and jq, used to call the Gitea API.
+# Gitea stores everything on emptyDir volumes: a pod restart loses the repositories.
+# ROOT_URL is the in-cluster address, so the clone URLs in webhook payloads work
+# from inside the cluster. ALLOWED_HOST_LIST=private lets Gitea send webhooks to
+# Services inside the cluster (Gitea blocks private addresses by default).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gitea
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea
+  namespace: gitea
+  labels:
+    app: gitea
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: gitea
+  template:
+    metadata:
+      labels:
+        app: gitea
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: gitea
+          image: gitea/gitea:28.2.0-rootless
+          env:
+            - name: GITEA__security__INSTALL_LOCK
+              value: "true"
+            - name: GITEA__database__DB_TYPE
+              value: sqlite3
+            - name: GITEA__server__HTTP_PORT
+              value: "3000"
+            - name: GITEA__server__ROOT_URL
+              value: http://gitea-http.gitea.svc.cluster.local:3000/
+            - name: GITEA__server__DISABLE_SSH
+              value: "true"
+            - name: GITEA__service__DISABLE_REGISTRATION
+              value: "true"
+            - name: GITEA__repository__DEFAULT_BRANCH
+              value: main
+            - name: GITEA__webhook__ALLOWED_HOST_LIST
+              value: private
+          ports:
+            - name: http
+              containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+            periodSeconds: 5
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/gitea
+            - name: config
+              mountPath: /etc/gitea
+      volumes:
+        - name: data
+          emptyDir: {}
+        - name: config
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitea-http
+  namespace: gitea
+  labels:
+    app: gitea
+spec:
+  selector:
+    app: gitea
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tester
+  namespace: gitea
+  labels:
+    app: tester
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tester
+  template:
+    metadata:
+      labels:
+        app: tester
+    spec:
+      containers:
+        - name: tester
+          image: nicolaka/netshoot:v0.13
+          command: ["sh", "-c", "while true; do sleep 30; done"]

@@ -1,0 +1,284 @@
+# Course manifest for ATS128 - Pipelines-as-Code & Git-Native CI (Tekton).
+#
+# One entry per section under `modules:`. Each section lists, in order: its
+# README, then for each module the landing page (course.md), its parts
+# (course-0N-*.md), and right after the part a lab tests, the lab's
+# question.md reading and the `type: lab` entry. The module's summary page
+# comes last. The section capstone closes the section. Playgrounds are not
+# listed: the landing page's playground marker shows them. solution.md is
+# never listed.
+#
+# Every `path:` is relative to this file.
+
+training:
+  id: ATS128
+  title: "Tekton: Pipelines-as-Code & Git-Native CI"
+  maturity: draft
+  description: >
+    Training material covering the Pipelines-as-Code & Git-Native CI domain
+    of the Tekton training path: the Pipelines-as-Code model (PipelineRuns
+    stored in a repository's .tekton directory and started by Git events), its
+    components and the Repository custom resource, the difference between a
+    GitHub App, a GitHub webhook and the other Git providers, installing
+    Pipelines-as-Code and the tkn pac plugin, connecting a repository with a
+    token and a webhook, dynamic variables, matching events and branches with
+    on-event, on-target-branch, CEL expressions and path changes, cleanup with
+    max-keep-runs, commit status reporting, concurrency limits, and who may
+    run pipelines (OWNERS, /ok-to-test, /retest). The labs use an in-cluster
+    Gitea server as the Git provider. Each module pairs a layered reader with
+    an ungraded hands-on playground and a graded practice lab. Each section
+    closes with an integration capstone. Written for Pipelines-as-Code
+    v0.52.0, Tekton Pipelines v1.17.1 and tkn v0.46.2.
+
+  certification:
+    name: Tekton
+    code: TEKTON
+    provider: Astrona
+    domain: "Pipelines-as-Code & Git-Native CI"
+    weight: 15
+
+modules:
+
+  - id: module-intro
+    title: "Introduction"
+    description: >
+      Start here. What this course trains you to do, how it is laid out, how
+      to get your machine ready with the astrona command-line tool, how the
+      content is written and checked, who maintains it, and how to report a
+      mistake.
+
+    content:
+      - type: reading
+        title: Introduction
+        path: sections/intro/README.md
+      - type: reading
+        title: "Welcome To The Course"
+        path: sections/intro/course-01-welcome.md
+      - type: reading
+        title: "Get Your Machine Ready"
+        path: sections/intro/course-02-get-your-machine-ready.md
+      - type: reading
+        title: "How This Course Is Made"
+        path: sections/intro/course-03-how-this-course-is-made.md
+
+  - id: module-010
+    title: "Install Pipelines-as-Code And Connect A Repository"
+    description: >
+      The Pipelines-as-Code model and its components, the Repository custom
+      resource, GitHub App, GitHub webhook and the other Git providers,
+      installing Pipelines-as-Code and the tkn pac plugin from the release,
+      and connecting a Gitea repository with a token, a webhook secret and a
+      webhook so that a pull request starts a PipelineRun and gets a commit
+      status.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-010/README.md
+
+      - type: reading
+        title: "Connect A Git Repository To Pipelines-as-Code"
+        path: sections/section-010/module-01/course.md
+      - type: reading
+        title: "What Pipelines-as-Code Is And How Events Become Runs"
+        path: sections/section-010/module-01/course-01-what-pipelines-as-code-is.md
+      - type: reading
+        title: "Install Pipelines-as-Code And The tkn pac Plugin"
+        path: sections/section-010/module-01/course-02-install-pipelines-as-code.md
+      - type: reading
+        title: "Connect A Repository With A Token And A Webhook"
+        path: sections/section-010/module-01/course-03-connect-a-repository.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Connect A Gitea Repository To Pipelines-as-Code Lab"
+        path: sections/section-010/module-01/labs/lab-01
+        difficulty: beginner
+        estimated_duration: 30m
+        topic: repository-connection
+        task_kind: build
+        tags: [pipelines-as-code, release-manifest, repository-crd, gitea, webhook, provider-token, commit-status]
+        learning_goals:
+          - Install Pipelines-as-Code v0.52.0 from its release manifest and verify its three Deployments
+          - Connect a Gitea repository with a Secret, a Repository and a webhook to the controller Service
+          - Prove the connection with a pull request that starts a PipelineRun and gets a success status
+        resources:
+          - name: "Installation on Kubernetes"
+            url: https://pipelinesascode.com/docs/installation/kubernetes/
+          - name: "Forgejo and Gitea provider"
+            url: https://pipelinesascode.com/docs/providers/forgejo/
+          - name: "Repository CR"
+            url: https://pipelinesascode.com/docs/guides/repository-crd/
+      - type: reading
+        title: Summary
+        path: sections/section-010/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-010/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Repair A Broken Repository Connection Capstone"
+        path: sections/section-010/capstone/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 35m
+        topic: repository-connection
+        task_kind: troubleshooting
+        tags: [repository-crd, pac-webhook, pac-controller, webhook, provider-token, gitea]
+        learning_goals:
+          - Find why a pull request starts no PipelineRun, from the controller log, the Repository objects and the Gitea webhook
+          - Remove a duplicate Repository, point the Repository at the right Secret key and fix the webhook port
+          - Prove the repair with a PipelineRun in the right namespace and a success status in Gitea
+        resources:
+          - name: "Repository CR"
+            url: https://pipelinesascode.com/docs/guides/repository-crd/
+          - name: "Forgejo and Gitea provider"
+            url: https://pipelinesascode.com/docs/providers/forgejo/
+          - name: "Installation on Kubernetes"
+            url: https://pipelinesascode.com/docs/installation/kubernetes/
+
+  - id: module-020
+    title: "The .tekton Directory And Event Matching"
+    description: >
+      How Pipelines-as-Code reads PipelineRun templates from the .tekton
+      directory, dynamic variables such as revision and source_url, matching
+      events and branches with on-event and on-target-branch, branch globs,
+      push and tag events, CEL expressions, path changes, remote tasks and
+      cleanup with max-keep-runs.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-020/README.md
+
+      - type: reading
+        title: "Write Pipelines In The .tekton Directory"
+        path: sections/section-020/module-01/course.md
+      - type: reading
+        title: "The .tekton Directory And Dynamic Variables"
+        path: sections/section-020/module-01/course-01-the-tekton-directory.md
+      - type: reading
+        title: "Match Events And Branches With Annotations"
+        path: sections/section-020/module-01/course-02-match-events-and-branches.md
+      - type: reading
+        title: Question
+        path: sections/section-020/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Fix The Event Matching Of A Pull Request Pipeline Lab"
+        path: sections/section-020/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: event-matching
+        task_kind: troubleshooting
+        tags: [tekton-directory, on-event, on-target-branch, dynamic-variables, pipelinerun, commit-status]
+        learning_goals:
+          - Find why a pull request starts no PipelineRun by reading the matching annotations
+          - Fix on-event, on-target-branch and a fixed revision on the pull request branch
+          - Prove that the run tested the pull request's own commit
+        resources:
+          - name: "Matching a PipelineRun"
+            url: https://pipelinesascode.com/docs/guides/event-matching/
+          - name: "Authoring PipelineRuns and dynamic variables"
+            url: https://pipelinesascode.com/docs/guides/creating-pipelines/
+      - type: reading
+        title: "CEL Expressions, Path Changes And Cleanup"
+        path: sections/section-020/module-01/course-03-cel-paths-and-cleanup.md
+      - type: reading
+        title: Summary
+        path: sections/section-020/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-020/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Route Push Pipelines By Branch Capstone"
+        path: sections/section-020/capstone/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 35m
+        topic: event-matching
+        task_kind: troubleshooting
+        tags: [on-cel-expression, on-target-branch, on-event, max-keep-runs, tekton-directory, pipelinerun]
+        learning_goals:
+          - Find why no push to main starts a PipelineRun, including a CEL expression that overrides the other annotations and a duplicate name
+          - Match pushes to main and to release branches with a branch glob, and keep three runs
+          - Prove the routing with pushes to three branches
+        resources:
+          - name: "Matching a PipelineRun"
+            url: https://pipelinesascode.com/docs/guides/event-matching/
+          - name: "CEL expressions"
+            url: https://pipelinesascode.com/docs/guides/event-matching/cel-expressions/
+          - name: "PipelineRuns cleanup"
+            url: https://pipelinesascode.com/docs/advanced/cleanup/
+
+  - id: module-030
+    title: "Pull Request Status, Concurrency And Access Control"
+    description: >
+      How Pipelines-as-Code reports results back to the Git provider (GitHub
+      checks, commit statuses and pull request comments), reading runs with
+      tkn pac, limiting parallel runs with concurrency_limit, cancelling old
+      runs, and deciding who may run pipelines: owners, collaborators, the
+      OWNERS file, /ok-to-test, /retest and /test.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-030/README.md
+
+      - type: reading
+        title: "Control How Pipeline Runs Report, Queue And Start"
+        path: sections/section-030/module-01/course.md
+      - type: reading
+        title: "How Pipelines-as-Code Reports Status"
+        path: sections/section-030/module-01/course-01-status-reporting.md
+      - type: reading
+        title: "Queue Runs With concurrency_limit"
+        path: sections/section-030/module-01/course-02-concurrency.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Queue Pull Request Runs With concurrency_limit Lab"
+        path: sections/section-030/module-01/labs/lab-01
+        difficulty: beginner
+        estimated_duration: 20m
+        topic: concurrency
+        task_kind: build
+        tags: [concurrency-limit, repository-crd, pac-watcher, commit-status, pipelinerun]
+        learning_goals:
+          - Set concurrency_limit on a Repository so that only one PipelineRun runs at a time
+          - Trigger the pull request pipelines again and watch the second run wait in the queue
+          - Prove from the run times and the commit statuses that the runs did not overlap
+        resources:
+          - name: "Concurrency"
+            url: https://pipelinesascode.com/docs/guides/repository-crd/concurrency/
+          - name: "PipelineRun status"
+            url: https://pipelinesascode.com/docs/guides/statuses/
+      - type: reading
+        title: "Control Who Can Run Pipelines"
+        path: sections/section-030/module-01/course-03-access-control.md
+      - type: reading
+        title: Summary
+        path: sections/section-030/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-030/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Gate An Outside Contributor's Pull Request Capstone"
+        path: sections/section-030/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 40m
+        topic: access-control
+        task_kind: troubleshooting
+        tags: [ok-to-test, owners-file, acl, fork-pull-request, webhook-secret, commit-status]
+        learning_goals:
+          - Find why events from Gitea are refused and align the webhook secret on both sides
+          - Approve a pull request from a fork with /ok-to-test and read its commit status
+          - Trust a contributor through the OWNERS file instead of write access
+        resources:
+          - name: "Running the PipelineRun and ACL"
+            url: https://pipelinesascode.com/docs/guides/running-pipelines/
+          - name: "GitOps commands"
+            url: https://pipelinesascode.com/docs/guides/gitops-commands/
+          - name: "Forgejo and Gitea provider"
+            url: https://pipelinesascode.com/docs/providers/forgejo/

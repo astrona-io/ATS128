@@ -1,0 +1,18 @@
+# The Repository that connects the Gitea repository starfleet/bridge-app to
+# Pipelines-as-Code. PipelineRuns for its events run in the namespace starfleet.
+apiVersion: pipelinesascode.tekton.dev/v1alpha1
+kind: Repository
+metadata:
+  name: bridge-app
+  namespace: starfleet
+spec:
+  url: "http://gitea-http.gitea.svc.cluster.local:3000/starfleet/bridge-app"
+  git_provider:
+    type: gitea
+    url: "http://gitea-http.gitea.svc.cluster.local:3000"
+    secret:
+      name: gitea-webhook-config
+      key: provider.token
+    webhook_secret:
+      name: gitea-webhook-config
+      key: webhook.secret

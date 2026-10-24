@@ -1,0 +1,59 @@
+# Queue Pull Request Runs With concurrency_limit
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-128-lab-030-01"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-tekton-pac"
+      description: "Installs the tkn CLI 0.46.2, tkn-pac 0.52.0, Tekton Pipelines v1.17.1, Pipelines-as-Code v0.52.0 and Gitea with the user starfleet and a token"
+      type: "file"
+      source: "bootstrap/01-install-tekton-pac.sh"
+    - name: "ats-128-lab-030-01-setup"
+      description: "Seeds starfleet/bridge-app with the pipelines lint and unit-test, connects it, opens pull request #1 and waits for its first runs"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+  manifests:
+    - name: "lab-start"
+      description: "The namespaces starfleet and gitea, Gitea and the tester pod"
+      type: "file"
+      source: "manifests/lab-start.yaml"
+testing:
+  init:
+    - name: "wait-for-environment"
+      description: "Waits until Tekton, Pipelines-as-Code and Gitea are ready"
+      type: "file"
+      source: "testing/wait-for-environment.sh"
+    - name: "reference-solution"
+      description: "The fix a correct learner makes; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-concurrency-limit"
+      description: "Confirms the Repository bridge-app sets concurrency_limit 1"
+      type: "file"
+      source: "validation/validate-concurrency-limit.sh"
+    - name: "validate-queued-runs"
+      description: "Confirms lint and unit-test succeeded for the pull request head and did not overlap"
+      type: "file"
+      source: "validation/validate-queued-runs.sh"
+    - name: "validate-commit-statuses"
+      description: "Confirms Gitea shows success for both lint and unit-test on that commit"
+      type: "file"
+      source: "validation/validate-commit-statuses.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - busybox:1.37.0
+      - alpine/git:v2.52.0
+      - gitea/gitea:28.2.0-rootless
+      - nicolaka/netshoot:v0.13

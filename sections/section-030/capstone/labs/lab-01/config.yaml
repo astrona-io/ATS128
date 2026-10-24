@@ -1,0 +1,59 @@
+# Gate An Outside Contributor's Pull Request (section 030 capstone)
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-128-capstone-030"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-tekton-pac"
+      description: "Installs the tkn CLI 0.46.2, tkn-pac 0.52.0, Tekton Pipelines v1.17.1, Pipelines-as-Code v0.52.0 and Gitea with the users starfleet and cadet"
+      type: "file"
+      source: "bootstrap/01-install-tekton-pac.sh"
+    - name: "ats-128-capstone-030-setup"
+      description: "Seeds starfleet/bridge-app, connects it with a mismatched webhook secret, and opens a pull request from cadet's fork"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+  manifests:
+    - name: "lab-start"
+      description: "The namespaces starfleet and gitea, Gitea and the tester pod"
+      type: "file"
+      source: "manifests/lab-start.yaml"
+testing:
+  init:
+    - name: "wait-for-environment"
+      description: "Waits until Tekton, Pipelines-as-Code and Gitea are ready"
+      type: "file"
+      source: "testing/wait-for-environment.sh"
+    - name: "reference-solution"
+      description: "The fix a correct learner makes; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-pull-request-tested"
+      description: "Confirms starfleet approved cadet's pull request with /ok-to-test and its PipelineRun succeeded"
+      type: "file"
+      source: "validation/validate-pull-request-tested.sh"
+    - name: "validate-owners"
+      description: "Confirms OWNERS on main lists cadet and cadet has no write access"
+      type: "file"
+      source: "validation/validate-owners.sh"
+    - name: "validate-trusted-contributor"
+      description: "Pushes a new commit as cadet and confirms it runs without /ok-to-test"
+      type: "file"
+      source: "validation/validate-trusted-contributor.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - busybox:1.37.0
+      - alpine/git:v2.52.0
+      - gitea/gitea:28.2.0-rootless
+      - nicolaka/netshoot:v0.13
