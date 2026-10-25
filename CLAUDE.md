@@ -255,29 +255,13 @@ section is only true for this one.
   `pkg/matcher`, `pkg/webhook`, `pkg/kubeinteraction`). Check every page
   against them.
 
-### Status: built, not yet run
+### Status: every environment passes `astrona test`
 
-The first version of this repository was written from the documentation, the
-release manifest and the source at the pinned tags **without a live run**. No
-playground or lab has been started, and no `astrona test` has passed yet.
-Until a maintainer runs them:
-
-- Pages describe results in words. Do not add `text` output blocks until the
-  output comes from a real run, and then paste it exactly.
-- Treat every lab as unverified. Run `astrona validate` and `astrona test` on
-  each one, one cluster at a time, before the course goes past `maturity:
-  draft`.
-- Remove this subsection when every lab has passed `astrona test`.
-
-The biggest open risks are: whether Gitea 28.2.0 fills the `added`,
-`modified` and `removed` lists of a push payload for commits made through the
-API (path matching on push events relies on them; no graded lab depends on
-it); whether Gitea serves `git/trees` of a fork's commit from the base
-repository (the section 030 capstone runs a fork pull request); the exact
-Gitea event names the hook API accepts (`push`, `pull_request`,
-`pull_request_sync`, `pull_request_comment`); and image pulls of the
-Pipelines-as-Code images from `ghcr.io` (`imagePullPolicy: Always`, not
-preloaded).
+All nine environments (three playgrounds, three labs, three capstones) passed
+`astrona test` on 2026-10-25 on a laptop `kind` cluster with Podman. Pages
+still describe results in words: add a `text` output block only when it is
+pasted exactly from a real run. Run `astrona test` again on every environment
+you change.
 
 ### Why the labs use Gitea, not GitHub
 
