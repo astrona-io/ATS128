@@ -126,7 +126,24 @@ kubectl get pipelineruns -n starfleet -l pipelinesascode.tekton.dev/original-prn
 
 A different, correct answer is to keep a CEL expression, for example `event == "push" && (target_branch == "main" || target_branch.startsWith("release-"))`, without the other two annotations. The grader checks the behaviour, not the style.
 
-## Step 4: Submit
+## Step 4: Bring the fix to release-1.0
+
+Pipelines-as-Code reads the PipelineRun templates for a push from the commit that was pushed. A push to `release-1.0` therefore uses the `.tekton` folder on `release-1.0`, and that folder still has the duplicate `push` and the wrong CEL expression. Make the same two changes on that branch: delete the copy, then commit the fixed `push.yaml`.
+
+```sh
+COPY_SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/push-copy.yaml?ref=release-1.0" | jq -r .sha')"
+kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X DELETE -H 'Content-Type: application/json' \
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/push-copy.yaml \
+  --data "{\"branch\":\"release-1.0\",\"message\":\"Remove the old copy of the push pipeline\",\"sha\":\"$COPY_SHA\"}"
+FILE_SHA="$(kubectl -n gitea exec deploy/tester -- sh -c 'curl -sS -u starfleet:starfleet-password "http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/push.yaml?ref=release-1.0" | jq -r .sha')"
+kubectl -n gitea exec deploy/tester -- curl -sS -u starfleet:starfleet-password -X PUT -H 'Content-Type: application/json' \
+  http://gitea-http.gitea.svc.cluster.local:3000/api/v1/repos/starfleet/bridge-app/contents/.tekton/push.yaml \
+  --data "{\"branch\":\"release-1.0\",\"message\":\"Run the push pipeline for main and release branches\",\"sha\":\"$FILE_SHA\",\"content\":\"$CONTENT\"}"
+```
+
+`CONTENT` still holds the fixed `push.yaml` from the step before. In a real repository you would merge or cherry-pick the fix from `main` into each release branch; the API calls above make the same change.
+
+## Step 5: Submit
 
 ```sh
 astrona submit -c sections/section-020/capstone/labs/lab-01
@@ -146,6 +163,7 @@ The grader commits to `feature-engines`, `main` and `release-1.0`, waits for the
 ## Common mistakes
 
 - Reading only `push.yaml`. The duplicate in another file stops the run just as well.
+- Fixing `.tekton` on `main` only. A push to `release-1.0` uses the `.tekton` folder of `release-1.0`, so it still starts nothing.
 - Checking the first commit after the fix and finding no run for the commit that deleted the copy. That commit still had the CEL expression.
 - Setting `max-keep-runs: 3` without quotes. Annotation values must be strings; Pipelines-as-Code cannot read a template with a number there.
 

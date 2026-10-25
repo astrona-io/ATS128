@@ -405,7 +405,10 @@ Every step uses a `script`. The PipelineRun result `commit` (the output of
   `refs/heads/release-1.0`). Two PipelineRuns with the same name in `.tekton`
   stop every run for the event ("found multiple pipelinerun in .tekton with the
   same name"). `max-keep-runs` deletes the oldest finished runs with the same
-  `original-prname` after a run succeeds.
+  `original-prname` after a run succeeds. For a push, Pipelines-as-Code reads
+  `.tekton` from the pushed commit (log: "Using PipelineRun definition from
+  source push commit SHA"), so every branch that should run pipelines needs
+  the fixed files itself (seen live in the section 020 capstone).
 - **Concurrency:** with `concurrency_limit`, the controller creates the runs
   as pending (`state` label `queued`) and the watcher starts them in
   alphabetical order of name. A pending PipelineRun has no `startTime` until it

@@ -12,12 +12,13 @@ The `starfleet` team wants a build of `bridge-app` for every push to `main` and 
 
 1. Find out why a push to `main` starts no PipelineRun `push`. Read every file in `.tekton` on `main`. There is more than one fault.
 2. Fix the `.tekton` folder on `main` so that the PipelineRun `push` runs for pushes to `main` and to every `release-*` branch, and for no other branch.
-3. Make Pipelines-as-Code keep at most three finished runs of `push`.
+3. Make the same fix on `release-1.0`. For a push, Pipelines-as-Code reads `.tekton` from the pushed commit, so a release branch uses its own copy of the folder.
+4. Make Pipelines-as-Code keep at most three finished runs of `push`.
 
 ## Constraints
 
 - Keep the PipelineRun names `push` and `pull-request`, and keep `.tekton/pull-request.yaml` as it is.
-- Work on `main`. Keep the branches `release-1.0` and `feature-engines`.
+- Change only `main` and `release-1.0`. Keep the branches `release-1.0` and `feature-engines`.
 - Do not create PipelineRuns yourself.
 
 ## Done when

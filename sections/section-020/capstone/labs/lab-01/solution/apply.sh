@@ -87,3 +87,11 @@ put_file "$OWNER_AUTH" starfleet/bridge-app main "$SCRIPT_DIR/push.yaml" \
 
 sha="$(gitea_query "$OWNER_AUTH" "$REPO_PATH/branches/main" '.commit.id')"
 wait_for_pipelinerun "$sha" push
+
+# 3. A push uses the .tekton folder of the pushed commit, so release-1.0
+#    needs the same two changes.
+delete_file release-1.0 .tekton/push-copy.yaml "Remove the old copy of the push pipeline"
+put_file "$OWNER_AUTH" starfleet/bridge-app release-1.0 "$SCRIPT_DIR/push.yaml" \
+  .tekton/push.yaml "Run the push pipeline for main and release branches"
+sha="$(gitea_query "$OWNER_AUTH" "$REPO_PATH/branches/release-1.0" '.commit.id')"
+wait_for_pipelinerun "$sha" push
