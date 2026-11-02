@@ -34,8 +34,6 @@ training:
     name: Tekton
     code: TEKTON
     provider: Astrona
-    domain: "Pipelines-as-Code & Git-Native CI"
-    weight: 15
 
 modules:
 
