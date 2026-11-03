@@ -6,7 +6,7 @@ You first follow a run's result back to the Git provider: the commit status, the
 
 Keep one sentence in mind: **the watcher reports and queues, the controller decides who may run.**
 
-The module has three parts. **How Pipelines-as-Code Reports Status** explains what each provider shows, including a failed run's log snippet. **Queue Runs With concurrency_limit** sets a limit on the `Repository` and watches the queue; a graded lab follows it. **Control Who Can Run Pipelines** covers the access rules, the `OWNERS` file and the GitOps commands `/ok-to-test`, `/retest`, `/test` and `/cancel`.
+The module has four parts. **How Pipelines-as-Code Reports Status** explains what each provider shows, including a failed run's log snippet. **Queue Runs With concurrency_limit** sets a limit on the `Repository` and watches the queue; a graded lab follows it. **Control Who Can Run Pipelines** covers the access rules, the `OWNERS` file and the GitOps commands `/ok-to-test`, `/retest`, `/test` and `/cancel`. **Cancel Runs That Are No Longer Needed** covers cancel-in-progress and why it cannot be combined with a concurrency limit.
 
 ## Learning objectives
 

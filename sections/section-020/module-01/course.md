@@ -6,7 +6,7 @@ This module teaches how to write those PipelineRuns. You learn how Pipelines-as-
 
 Keep one sentence in mind: **every file in `.tekton` is a template, and its annotations are a filter.** A PipelineRun runs only when the event passes its filter.
 
-The module has three parts. **The .tekton Directory And Dynamic Variables** explains how the folder is read, what Pipelines-as-Code changes in a template before it creates the run, and how to check the result. **Match Events And Branches With Annotations** covers `on-event` and `on-target-branch`, push and pull request events, branch globs and tags. A graded lab follows the second part. **CEL Expressions, Path Changes And Cleanup** covers `on-cel-expression`, `on-path-change`, remote tasks, duplicate names and `max-keep-runs`.
+The module has four parts. **The .tekton Directory And Dynamic Variables** explains how the folder is read, what Pipelines-as-Code changes in a template before it creates the run, and how to check the result. **Match Events And Branches With Annotations** covers `on-event` and `on-target-branch`, push and pull request events, branch globs and tags. A graded lab follows the second part. **CEL Expressions, Path Changes And Cleanup** covers `on-cel-expression`, `on-path-change`, remote tasks, duplicate names and `max-keep-runs`. **Tags And Release Branches** shows full reference names, release branch globs and tag patterns.
 
 ## Learning objectives
 

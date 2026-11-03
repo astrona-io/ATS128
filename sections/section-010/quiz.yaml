@@ -470,3 +470,233 @@ questions:
         explanation: "Not correct. Only the default branch counts."
     correct_option: c
     explanation: "Correct. A new pipeline takes effect after the merge."
+
+  - id: ats128-010-q21
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe the GitHub App Secret"
+    source_readings:
+      - sections/section-010/module-03/course-01-the-github-app.md
+    prompt: "Where does the controller read the App ID, private key and webhook secret of a GitHub App?"
+    options:
+      - id: a
+        text: "From `spec.git_provider` of each `Repository`."
+        explanation: "Not correct. An App needs no `git_provider` block."
+      - id: b
+        text: "From the ConfigMap `pipelines-as-code-info`."
+        explanation: "Not correct. That ConfigMap holds version information."
+      - id: c
+        text: "From one Secret in the namespace `pipelines-as-code`."
+        explanation: "Correct. It belongs to the installation, not to a repository."
+      - id: d
+        text: "From the Gitea Secret."
+        explanation: "Not correct. Gitea is a different provider."
+    correct_option: c
+    explanation: "Correct. It belongs to the installation, not to a repository."
+
+  - id: ats128-010-q22
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Write a Repository for a GitHub App"
+    source_readings:
+      - sections/section-010/module-03/course-01-the-github-app.md
+    prompt: "Which fields does the `Repository` of a GitHub App need?"
+    options:
+      - id: a
+        text: "`url` and `git_provider.secret`."
+        explanation: "Not correct. A token is not used with an App."
+      - id: b
+        text: "`url` and `concurrency_limit`."
+        explanation: "Not correct. That field is optional."
+      - id: c
+        text: "`url` and `incoming`."
+        explanation: "Not correct. Incoming webhooks are optional."
+      - id: d
+        text: "Only the `url`."
+        explanation: "Correct. The App supplies the credentials."
+    correct_option: d
+    explanation: "Correct. The App supplies the credentials."
+
+  - id: ats128-010-q23
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain installation tokens"
+    source_readings:
+      - sections/section-010/module-03/course-01-the-github-app.md
+    prompt: "What is the main difference between an App installation token and a personal access token?"
+    options:
+      - id: a
+        text: "The controller creates a short-lived token for each event, and nothing long-lived is tied to a person."
+        explanation: "Correct. The rights are those granted to the App."
+      - id: b
+        text: "The installation token never expires."
+        explanation: "Not correct. It lasts about an hour."
+      - id: c
+        text: "The personal token reports with the Checks API."
+        explanation: "Not correct. Checks are for the App."
+      - id: d
+        text: "The installation token is stored in the `Repository`."
+        explanation: "Not correct. It is created at run time."
+    correct_option: a
+    explanation: "Correct. The rights are those granted to the App."
+
+  - id: ats128-010-q24
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose between the GitHub ways"
+    source_readings:
+      - sections/section-010/module-03/course-02-the-github-webhook.md
+    prompt: "A team cannot create a GitHub App. What do they use?"
+    options:
+      - id: a
+        text: "Only a webhook with no token."
+        explanation: "Not correct. The controller needs a token to answer."
+      - id: b
+        text: "A personal access token in a Secret and a repository webhook."
+        explanation: "Correct. The `Repository` names the Secret keys."
+      - id: c
+        text: "The `incoming` field."
+        explanation: "Not correct. That starts runs without Git events."
+      - id: d
+        text: "A Bitbucket app password."
+        explanation: "Not correct. That is another provider."
+    correct_option: b
+    explanation: "Correct. The `Repository` names the Secret keys."
+
+  - id: ats128-010-q25
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Name the result channel"
+    source_readings:
+      - sections/section-010/module-03/course-02-the-github-webhook.md
+    prompt: "How does a run show on a pull request when GitHub is connected with a webhook and a token?"
+    options:
+      - id: a
+        text: "As a Checks API check."
+        explanation: "Not correct. That needs an App."
+      - id: b
+        text: "As a new branch."
+        explanation: "Not correct. No branch is created."
+      - id: c
+        text: "As a commit status."
+        explanation: "Correct. An App shows richer checks instead."
+      - id: d
+        text: "It does not show."
+        explanation: "Not correct. Statuses are reported."
+    correct_option: c
+    explanation: "Correct. An App shows richer checks instead."
+
+  - id: ats128-010-q26
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Name the GitLab token scope"
+    source_readings:
+      - sections/section-010/module-03/course-03-gitlab.md
+    prompt: "Which scope must the GitLab token have?"
+    options:
+      - id: a
+        text: "`read_repository` only"
+        explanation: "Not correct. Statuses would fail."
+      - id: b
+        text: "`write_registry`"
+        explanation: "Not correct. That is for the container registry."
+      - id: c
+        text: "`sudo`"
+        explanation: "Not correct. It is not needed."
+      - id: d
+        text: "`api`"
+        explanation: "Correct. Reading alone cannot set statuses or comments."
+    correct_option: d
+    explanation: "Correct. Reading alone cannot set statuses or comments."
+
+  - id: ats128-010-q27
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Map GitLab words"
+    source_readings:
+      - sections/section-010/module-03/course-03-gitlab.md
+    prompt: "Which event does a GitLab merge request map to in `on-event`?"
+    options:
+      - id: a
+        text: "`pull_request`"
+        explanation: "Correct. Templates stay portable."
+      - id: b
+        text: "`merge_request`"
+        explanation: "Not correct. That is not the name used in `on-event`."
+      - id: c
+        text: "`push`"
+        explanation: "Not correct. That is a push."
+      - id: d
+        text: "`note`"
+        explanation: "Not correct. That is a comment."
+    correct_option: a
+    explanation: "Correct. Templates stay portable."
+
+  - id: ats128-010-q28
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Write a Repository for GitLab"
+    source_readings:
+      - sections/section-010/module-03/course-03-gitlab.md
+    prompt: "For a self-managed GitLab, what does `git_provider.url` hold?"
+    options:
+      - id: a
+        text: "The full project address."
+        explanation: "Not correct. That is `spec.url`."
+      - id: b
+        text: "The base address of the server, without the project path."
+        explanation: "Correct. The project path goes in `spec.url`."
+      - id: c
+        text: "The token."
+        explanation: "Not correct. The token is in the Secret."
+      - id: d
+        text: "The webhook address."
+        explanation: "Not correct. That is on the Git server."
+    correct_option: b
+    explanation: "Correct. The project path goes in `spec.url`."
+
+  - id: ats128-010-q29
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Know Bitbucket Cloud authentication"
+    source_readings:
+      - sections/section-010/module-03/course-04-bitbucket.md
+    prompt: "What does Bitbucket Cloud need besides the app password?"
+    options:
+      - id: a
+        text: "`git_provider.url` with the server address."
+        explanation: "Not correct. That is for Data Center."
+      - id: b
+        text: "A webhook secret."
+        explanation: "Not correct. Cloud has no shared webhook secret."
+      - id: c
+        text: "`git_provider.user` with the user name."
+        explanation: "Correct. The Secret holds the app password."
+      - id: d
+        text: "`type: github`."
+        explanation: "Not correct. The type is `bitbucket-cloud`."
+    correct_option: c
+    explanation: "Correct. The Secret holds the app password."
+
+  - id: ats128-010-q30
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Compare Bitbucket webhooks"
+    source_readings:
+      - sections/section-010/module-03/course-04-bitbucket.md
+    prompt: "How does the controller trust a Bitbucket Cloud webhook request, which has no shared secret?"
+    options:
+      - id: a
+        text: "It trusts every request."
+        explanation: "Not correct. The source check exists."
+      - id: b
+        text: "It calls GitHub."
+        explanation: "Not correct. That is unrelated."
+      - id: c
+        text: "It reads the `OWNERS` file."
+        explanation: "Not correct. That file controls who may run pipelines."
+      - id: d
+        text: "It checks that the source address is one of the addresses Atlassian publishes."
+        explanation: "Correct. ConfigMap keys control this check."
+    correct_option: d
+    explanation: "Correct. ConfigMap keys control this check."

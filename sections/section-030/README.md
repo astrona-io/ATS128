@@ -26,7 +26,8 @@ The module starts at its landing page, which also launches the playground. The p
 1. How Pipelines-as-Code Reports Status
 2. Queue Runs With concurrency_limit, followed by the lab **Queue Pull Request Runs With concurrency_limit**
 3. Control Who Can Run Pipelines
-4. Summary
+4. Cancel Runs That Are No Longer Needed
+5. Summary
 
 ### 2. Comments, Incoming Webhooks And Troubleshooting
 
@@ -36,7 +37,8 @@ The second module has a landing page, four parts, a graded lab, and a summary. I
 2. Run A Template From A Comment
 3. Incoming Webhooks, followed by the lab **Start A Pipeline With An Incoming Webhook**
 4. Find Out Why A Run Did Not Start
-5. Summary
+5. Act On Runs From The Command Line
+6. Summary
 
 ## Section capstone: Gate An Outside Contributor's Pull Request
 

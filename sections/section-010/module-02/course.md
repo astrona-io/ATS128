@@ -6,7 +6,7 @@ This module teaches those four places in detail. You read the `Repository` field
 
 Keep one sentence in mind: **every setting has a scope: the cluster (ConfigMap), one repository (`Repository`), or one pipeline (annotation).** When a behavior surprises you, ask which scope sets it.
 
-The module has four parts. **The Repository Object In Detail** covers each field of the `spec`, the namespace rule and the run history in the object. **Global Settings In The pipelines-as-code ConfigMap** covers the keys that apply to every repository and the `tkn pac` commands that read the installation. **Tokens, Webhook Events And The tkn pac Commands** covers the credentials and events each provider needs, how to rotate a token, and what a wrong token looks like. **Choose Where Pipeline Definitions Come From** covers `pipelinerun_provenance` and the `policy` setting. A graded lab follows the last part.
+The module has five parts. **The Repository Object In Detail** covers each field of the `spec`, the namespace rule and the run history in the object. **Global Settings In The pipelines-as-code ConfigMap** covers the keys that apply to every repository and the `tkn pac` commands that read the installation. **Tokens, Webhook Events And The tkn pac Commands** covers the credentials and events each provider needs, how to rotate a token, and what a wrong token looks like. **Choose Where Pipeline Definitions Come From** covers `pipelinerun_provenance` and the `policy` setting. A graded lab follows the fourth part. **Namespaces, ServiceAccounts And Quotas For A Repository** covers the ServiceAccount of the runs and a quota for the namespace.
 
 ## Learning objectives
 

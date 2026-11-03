@@ -17,7 +17,7 @@ You first learn the model: the `.tekton` folder, the path from a webhook to a Pi
 
 ## The learning path
 
-The section has two modules. It has a landing page, three short parts, a graded lab right after the part it tests, and a summary. Each module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
+The section has three modules. It has a landing page, three short parts, a graded lab right after the part it tests, and a summary. Each module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
 
 ### 1. Connect A Git Repository To Pipelines-as-Code
 
@@ -26,7 +26,8 @@ The module starts at its landing page, which also launches the playground. The p
 1. What Pipelines-as-Code Is And How Events Become Runs
 2. Install Pipelines-as-Code And The tkn pac Plugin
 3. Connect A Repository With A Token And A Webhook, followed by the lab **Connect A Gitea Repository To Pipelines-as-Code**
-4. Summary
+4. Check A Connected Repository End To End
+5. Summary
 
 ### 2. Operate The Repository Connection
 
@@ -36,6 +37,17 @@ The second module has a landing page, four parts, a graded lab, and a summary. I
 2. Global Settings In The pipelines-as-code ConfigMap
 3. Tokens, Webhook Events And The tkn pac Commands
 4. Choose Where Pipeline Definitions Come From, followed by the lab **Run Pull Requests With The Pipeline From The Default Branch**
+5. Namespaces, ServiceAccounts And Quotas For A Repository
+6. Summary
+
+### 3. Connect Other Git Providers
+
+The third module has a landing page, four parts and a summary. It has a playground with the Gitea setup, where you check `Repository` objects for other providers with a server dry run. It has no graded lab, because a lab cannot reach GitHub, GitLab or Bitbucket.
+
+1. The GitHub App
+2. The GitHub Webhook
+3. GitLab
+4. Bitbucket Cloud And Bitbucket Data Center
 5. Summary
 
 ## Section capstone: Repair A Broken Repository Connection

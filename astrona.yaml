@@ -109,8 +109,11 @@ modules:
           - name: "Repository CR"
             url: https://pipelinesascode.com/docs/guides/repository-crd/
       - type: reading
+        title: "Check A Connected Repository End To End"
+        path: sections/section-010/module-01/course-04-check-the-connection.md
+      - type: reading
         title: Summary
-        path: sections/section-010/module-01/course-04-summary.md
+        path: sections/section-010/module-01/course-05-summary.md
 
       - type: reading
         title: "Operate The Repository Connection"
@@ -148,8 +151,30 @@ modules:
           - name: "Forgejo and Gitea provider"
             url: https://pipelinesascode.com/docs/providers/forgejo/
       - type: reading
-        title: "Summary"
-        path: sections/section-010/module-02/course-05-summary.md
+        title: "Namespaces, ServiceAccounts And Quotas For A Repository"
+        path: sections/section-010/module-02/course-05-namespaces-and-service-accounts.md
+      - type: reading
+        title: Summary
+        path: sections/section-010/module-02/course-06-summary.md
+
+      - type: reading
+        title: "Connect Other Git Providers"
+        path: sections/section-010/module-03/course.md
+      - type: reading
+        title: "The GitHub App"
+        path: sections/section-010/module-03/course-01-the-github-app.md
+      - type: reading
+        title: "The GitHub Webhook"
+        path: sections/section-010/module-03/course-02-the-github-webhook.md
+      - type: reading
+        title: "GitLab"
+        path: sections/section-010/module-03/course-03-gitlab.md
+      - type: reading
+        title: "Bitbucket Cloud And Bitbucket Data Center"
+        path: sections/section-010/module-03/course-04-bitbucket.md
+      - type: reading
+        title: Summary
+        path: sections/section-010/module-03/course-05-summary.md
 
       - type: reading
         title: Question
@@ -225,8 +250,11 @@ modules:
         title: "CEL Expressions, Path Changes And Cleanup"
         path: sections/section-020/module-01/course-03-cel-paths-and-cleanup.md
       - type: reading
+        title: "Tags And Release Branches"
+        path: sections/section-020/module-01/course-04-tags-and-release-branches.md
+      - type: reading
         title: Summary
-        path: sections/section-020/module-01/course-04-summary.md
+        path: sections/section-020/module-01/course-05-summary.md
 
       - type: reading
         title: "Parameters, Secrets, Tasks And Resolving"
@@ -264,8 +292,11 @@ modules:
         title: "Resolve Templates And Find Authoring Errors"
         path: sections/section-020/module-02/course-04-resolve-and-author-errors.md
       - type: reading
-        title: "Summary"
-        path: sections/section-020/module-02/course-05-summary.md
+        title: "Share One Pipeline Between Repositories"
+        path: sections/section-020/module-02/course-05-share-pipelines-between-repositories.md
+      - type: reading
+        title: Summary
+        path: sections/section-020/module-02/course-06-summary.md
 
       - type: reading
         title: Question
@@ -341,8 +372,11 @@ modules:
         title: "Control Who Can Run Pipelines"
         path: sections/section-030/module-01/course-03-access-control.md
       - type: reading
+        title: "Cancel Runs That Are No Longer Needed"
+        path: sections/section-030/module-01/course-04-cancel-in-progress.md
+      - type: reading
         title: Summary
-        path: sections/section-030/module-01/course-04-summary.md
+        path: sections/section-030/module-01/course-05-summary.md
 
       - type: reading
         title: "Comments, Incoming Webhooks And Troubleshooting"
@@ -380,8 +414,11 @@ modules:
         title: "Find Out Why A Run Did Not Start"
         path: sections/section-030/module-02/course-04-why-a-run-did-not-start.md
       - type: reading
-        title: "Summary"
-        path: sections/section-030/module-02/course-05-summary.md
+        title: "Act On Runs From The Command Line"
+        path: sections/section-030/module-02/course-05-act-on-runs-from-the-command-line.md
+      - type: reading
+        title: Summary
+        path: sections/section-030/module-02/course-06-summary.md
 
       - type: reading
         title: Question

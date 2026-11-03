@@ -26,7 +26,8 @@ The module starts at its landing page, which also launches the playground. The p
 1. The .tekton Directory And Dynamic Variables
 2. Match Events And Branches With Annotations, followed by the lab **Fix The Event Matching Of A Pull Request Pipeline**
 3. CEL Expressions, Path Changes And Cleanup
-4. Summary
+4. Tags And Release Branches
+5. Summary
 
 ### 2. Parameters, Secrets, Tasks And Resolving
 
@@ -36,7 +37,8 @@ The second module has a landing page, four parts, a graded lab, and a summary. I
 2. Secrets And The Git Provider Token In A Run
 3. Local And Remote Tasks And Pipelines
 4. Resolve Templates And Find Authoring Errors
-5. Summary
+5. Share One Pipeline Between Repositories
+6. Summary
 
 ## Section capstone: Route Push Pipelines By Branch
 

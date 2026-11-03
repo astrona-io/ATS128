@@ -40,7 +40,7 @@ contains:
 
 | Section | Title | Modules | Labs | Topic |
 | --- | --- | --- | --- | --- |
-| [010](sections/section-010) | Install Pipelines-as-Code And Connect A Repository | 2 | 2 + capstone | Concepts and installation |
+| [010](sections/section-010) | Install Pipelines-as-Code And Connect A Repository | 3 | 2 + capstone | Concepts and installation |
 | [020](sections/section-020) | The .tekton Directory And Event Matching | 2 | 2 + capstone | Event matching |
 | [030](sections/section-030) | Pull Request Status, Concurrency And Access Control | 2 | 2 + capstone | Status, concurrency, access control |
 
@@ -57,12 +57,13 @@ is allowed to start a run.
 
 | Module | Reader | Parts | Labs |
 | --- | --- | --- | --- |
-| 010-01 | [Connect A Git Repository To Pipelines-as-Code](sections/section-010/module-01/course.md) | 3 | [lab-01](sections/section-010/module-01/labs/lab-01) |
-| 010-02 | [Operate The Repository Connection](sections/section-010/module-02/course.md) | 4 | [lab-01](sections/section-010/module-02/labs/lab-01) |
-| 020-01 | [Write Pipelines In The .tekton Directory](sections/section-020/module-01/course.md) | 3 | [lab-01](sections/section-020/module-01/labs/lab-01) |
-| 020-02 | [Parameters, Secrets, Tasks And Resolving](sections/section-020/module-02/course.md) | 4 | [lab-01](sections/section-020/module-02/labs/lab-01) |
-| 030-01 | [Control How Pipeline Runs Report, Queue And Start](sections/section-030/module-01/course.md) | 3 | [lab-01](sections/section-030/module-01/labs/lab-01) |
-| 030-02 | [Comments, Incoming Webhooks And Troubleshooting](sections/section-030/module-02/course.md) | 4 | [lab-01](sections/section-030/module-02/labs/lab-01) |
+| 010-01 | [Connect A Git Repository To Pipelines-as-Code](sections/section-010/module-01/course.md) | 4 | [lab-01](sections/section-010/module-01/labs/lab-01) |
+| 010-02 | [Operate The Repository Connection](sections/section-010/module-02/course.md) | 5 | [lab-01](sections/section-010/module-02/labs/lab-01) |
+| 010-03 | [Connect Other Git Providers](sections/section-010/module-03/course.md) | 4 | none (playground only) |
+| 020-01 | [Write Pipelines In The .tekton Directory](sections/section-020/module-01/course.md) | 4 | [lab-01](sections/section-020/module-01/labs/lab-01) |
+| 020-02 | [Parameters, Secrets, Tasks And Resolving](sections/section-020/module-02/course.md) | 5 | [lab-01](sections/section-020/module-02/labs/lab-01) |
+| 030-01 | [Control How Pipeline Runs Report, Queue And Start](sections/section-030/module-01/course.md) | 4 | [lab-01](sections/section-030/module-01/labs/lab-01) |
+| 030-02 | [Comments, Incoming Webhooks And Troubleshooting](sections/section-030/module-02/course.md) | 5 | [lab-01](sections/section-030/module-02/labs/lab-01) |
 
 | Lab | Title | Kind | Faults or work |
 | --- | --- | --- | --- |

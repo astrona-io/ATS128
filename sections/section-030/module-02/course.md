@@ -6,7 +6,7 @@ This module teaches the comment commands, how a template can react to its own co
 
 Keep one sentence in mind: **a run starts because an event matched a template, and a comment or an incoming webhook is also an event.** Troubleshooting is finding the first step in that chain that did not happen.
 
-The module has four parts. **Comment Commands On A Pull Request** covers `/retest`, `/test`, `/cancel` and `/ok-to-test`, and who may use them. **Run A Template From A Comment** covers `on-comment` and `{{ trigger_comment }}`. **Incoming Webhooks** covers the `incoming` field of the `Repository`, the endpoint and the request, and a graded lab follows it. **Find Out Why A Run Did Not Start** covers the order of checks and where each one is read.
+The module has five parts. **Comment Commands On A Pull Request** covers `/retest`, `/test`, `/cancel` and `/ok-to-test`, and who may use them. **Run A Template From A Comment** covers `on-comment` and `{{ trigger_comment }}`. **Incoming Webhooks** covers the `incoming` field of the `Repository`, the endpoint and the request, and a graded lab follows it. **Find Out Why A Run Did Not Start** covers the order of checks and where each one is read. **Act On Runs From The Command Line** covers `tkn` and `tkn pac` for listing, reading, cancelling and cleaning up runs.
 
 ## Learning objectives
 

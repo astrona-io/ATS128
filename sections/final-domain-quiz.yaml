@@ -355,3 +355,49 @@ questions:
         explanation: "Not correct. It is not part of `git_provider`."
     correct_option: a
     explanation: "Correct. It holds the type, the secret, the targets and the params."
+
+  - id: ats128-final-q18
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose between the GitHub ways"
+    source_readings:
+      - sections/section-010/module-03/course-02-the-github-webhook.md
+    prompt: "A team cannot create a GitHub App. What do they use?"
+    options:
+      - id: a
+        text: "Only a webhook with no token."
+        explanation: "Not correct. The controller needs a token to answer."
+      - id: b
+        text: "A personal access token in a Secret and a repository webhook."
+        explanation: "Correct. The `Repository` names the Secret keys."
+      - id: c
+        text: "The `incoming` field."
+        explanation: "Not correct. That starts runs without Git events."
+      - id: d
+        text: "A Bitbucket app password."
+        explanation: "Not correct. That is another provider."
+    correct_option: b
+    explanation: "Correct. The `Repository` names the Secret keys."
+
+  - id: ats128-final-q17
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Know Bitbucket Cloud authentication"
+    source_readings:
+      - sections/section-010/module-03/course-04-bitbucket.md
+    prompt: "What does Bitbucket Cloud need besides the app password?"
+    options:
+      - id: a
+        text: "`git_provider.url` with the server address."
+        explanation: "Not correct. That is for Data Center."
+      - id: b
+        text: "A webhook secret."
+        explanation: "Not correct. Cloud has no shared webhook secret."
+      - id: c
+        text: "`git_provider.user` with the user name."
+        explanation: "Correct. The Secret holds the app password."
+      - id: d
+        text: "`type: github`."
+        explanation: "Not correct. The type is `bitbucket-cloud`."
+    correct_option: c
+    explanation: "Correct. The Secret holds the app password."

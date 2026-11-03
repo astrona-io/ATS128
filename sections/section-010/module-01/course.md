@@ -6,7 +6,7 @@ This module installs Pipelines-as-Code and connects one repository to it. Before
 
 Keep one sentence in mind: **the Git event starts the run, the `Repository` decides where it runs, and the `.tekton` folder decides what runs.**
 
-The module has three parts. **What Pipelines-as-Code Is And How Events Become Runs** explains the model, the three components and the Git providers, including why GitHub Apps are the usual choice on GitHub and why your labs use Gitea instead. **Install Pipelines-as-Code And The tkn pac Plugin** installs the release and looks at what it created. **Connect A Repository With A Token And A Webhook** creates the Secret, the `Repository` and the webhook, then opens a pull request and follows it to a commit status. A graded lab follows the third part.
+The module has four parts. **What Pipelines-as-Code Is And How Events Become Runs** explains the model, the three components and the Git providers, including why GitHub Apps are the usual choice on GitHub and why your labs use Gitea instead. **Install Pipelines-as-Code And The tkn pac Plugin** installs the release and looks at what it created. **Connect A Repository With A Token And A Webhook** creates the Secret, the `Repository` and the webhook, then opens a pull request and follows it to a commit status. A graded lab follows the third part. **Check A Connected Repository End To End** closes the module with a routine that proves each link from the webhook to the commit status.
 
 ## Learning objectives
 

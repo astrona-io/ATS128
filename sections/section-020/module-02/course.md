@@ -4,7 +4,7 @@ A template in `.tekton` rarely stays the same for every repository, every branch
 
 Keep one sentence in mind: **a template describes the steps, and the Repository, the event and the cluster supply the values.** When a value is wrong, find which of the three supplied it.
 
-The module has four parts. **Custom Parameters On The Repository** covers `params`, filters and the full list of dynamic variables, and a graded lab follows it. **Secrets And The Git Provider Token In A Run** covers `secret_ref` and the `git_auth_secret` variable. **Local And Remote Tasks And Pipelines** covers the `task` and `pipeline` annotations, where the definitions are fetched from and the `remote-tasks` switch. **Resolve Templates And Find Authoring Errors** covers `tkn pac resolve` and the usual errors of a template.
+The module has five parts. **Custom Parameters On The Repository** covers `params`, filters and the full list of dynamic variables, and a graded lab follows it. **Secrets And The Git Provider Token In A Run** covers `secret_ref` and the `git_auth_secret` variable. **Local And Remote Tasks And Pipelines** covers the `task` and `pipeline` annotations, where the definitions are fetched from and the `remote-tasks` switch. **Resolve Templates And Find Authoring Errors** covers `tkn pac resolve` and the usual errors of a template. **Share One Pipeline Between Repositories** shows a thin template that points at a shared Pipeline.
 
 ## Learning objectives
 
