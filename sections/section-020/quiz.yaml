@@ -1,0 +1,242 @@
+# Knowledge check for section 020. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats128-020
+course_id: ATS128
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-020
+  title: "The .tekton Directory And Event Matching"
+questions:
+  - id: ats128-020-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain where the folder is read from"
+    source_readings:
+      - sections/section-020/module-01/course-01-the-tekton-directory.md
+    prompt: "From which commit does the controller read `.tekton` for a pull request?"
+    options:
+      - id: a
+        text: "The latest commit of `main`."
+        explanation: "Not correct. That is the behavior only when `pipelinerun_provenance` is set to `default_branch`."
+      - id: b
+        text: "The head commit of the pull request's branch."
+        explanation: "Correct. A change to `.tekton` in a pull request is tested by that pull request."
+      - id: c
+        text: "The first commit of the repository."
+        explanation: "Not correct. The controller never reads old history for this."
+      - id: d
+        text: "The commit the cluster last deployed."
+        explanation: "Not correct. Pipelines-as-Code does not track deployments."
+    correct_option: b
+    explanation: "Correct. A change to `.tekton` in a pull request is tested by that pull request."
+
+  - id: ats128-020-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Tell the two kinds of variables apart"
+    source_readings:
+      - sections/section-020/module-01/course-01-the-tekton-directory.md
+    prompt: "Which statement about `{{ revision }}` and `$(params.revision)` is correct?"
+    options:
+      - id: a
+        text: "Tekton fills both at the same time, when the run starts."
+        explanation: "Not correct. Tekton does not know the `{{ }}` syntax."
+      - id: b
+        text: "Pipelines-as-Code fills both, before the run exists."
+        explanation: "Not correct. `$(params.x)` is a Tekton variable."
+      - id: c
+        text: "Pipelines-as-Code fills `{{ revision }}` before the PipelineRun exists. Tekton fills `$(params.revision)` when the run starts."
+        explanation: "Correct. The PipelineRun object in the cluster contains no `{{ }}`."
+      - id: d
+        text: "They are two spellings of the same variable."
+        explanation: "Not correct. They are replaced by different programs at different times."
+    correct_option: c
+    explanation: "Correct. The PipelineRun object in the cluster contains no `{{ }}`."
+
+  - id: ats128-020-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose the right source URL for forks"
+    source_readings:
+      - sections/section-020/module-01/course-01-the-tekton-directory.md
+    prompt: "A pull request comes from a fork. Which variable gives the URL to clone so that the run gets the fork's commit?"
+    options:
+      - id: a
+        text: "`{{ repo_url }}`"
+        explanation: "Not correct. That is the repository that has the `Repository` object. It does not hold the fork's commit."
+      - id: b
+        text: "`{{ target_namespace }}`"
+        explanation: "Not correct. That is a namespace, not a URL."
+      - id: c
+        text: "`{{ git_auth_secret }}`"
+        explanation: "Not correct. That is the name of a Secret with the token."
+      - id: d
+        text: "`{{ source_url }}`"
+        explanation: "Correct. It is the repository the change comes from."
+    correct_option: d
+    explanation: "Correct. It is the repository the change comes from."
+
+  - id: ats128-020-q04
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Use on-event and on-target-branch"
+    source_readings:
+      - sections/section-020/module-01/course-02-match-events-and-branches.md
+    prompt: "A PipelineRun has `on-event: \"[pull_request]\"` and `on-target-branch: \"[main]\"`. For which pull requests does it run?"
+    options:
+      - id: a
+        text: "Pull requests that merge into `main`."
+        explanation: "Correct. For a pull request, the target branch is the branch it merges into."
+      - id: b
+        text: "Pull requests that come from the branch `main`."
+        explanation: "Not correct. That would be the source branch."
+      - id: c
+        text: "Every push to `main`."
+        explanation: "Not correct. A push is the event `push`, not `pull_request`."
+      - id: d
+        text: "Every pull request in the repository."
+        explanation: "Not correct. The branch annotation limits it to `main`."
+    correct_option: a
+    explanation: "Correct. For a pull request, the target branch is the branch it merges into."
+
+  - id: ats128-020-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Spot a wrong event name"
+    source_readings:
+      - sections/section-020/module-01/course-02-match-events-and-branches.md
+    prompt: "A template says `on-event: \"[pull-request]\"`. What happens when a pull request is opened?"
+    options:
+      - id: a
+        text: "The run starts, because dashes and underscores are the same."
+        explanation: "Not correct. Event names are fixed words."
+      - id: b
+        text: "Nothing matches, and Pipelines-as-Code does not warn on the pull request."
+        explanation: "Correct. The correct name has an underscore: `pull_request`."
+      - id: c
+        text: "The admission webhook refuses the pull request."
+        explanation: "Not correct. The admission webhook checks `Repository` objects only."
+      - id: d
+        text: "The controller changes the name and starts the run."
+        explanation: "Not correct. It does not correct names."
+    correct_option: b
+    explanation: "Correct. The correct name has an underscore: `pull_request`."
+
+  - id: ats128-020-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Write branch patterns"
+    source_readings:
+      - sections/section-020/module-01/course-02-match-events-and-branches.md
+    prompt: "Which `on-target-branch` value matches `main`, `release-1.0` and `release-2.3`?"
+    options:
+      - id: a
+        text: "`[main, release-.*]`"
+        explanation: "Not correct. The patterns are globs, not regular expressions."
+      - id: b
+        text: "`[release-*]`"
+        explanation: "Not correct. It does not match `main`."
+      - id: c
+        text: "`[main, release-*]`"
+        explanation: "Correct. The pattern is a glob, and `*` matches any characters."
+      - id: d
+        text: "`[refs/tags/*]`"
+        explanation: "Not correct. That matches tags, not branches."
+    correct_option: c
+    explanation: "Correct. The pattern is a glob, and `*` matches any characters."
+
+  - id: ats128-020-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Know when a pull request tests a changed template"
+    source_readings:
+      - sections/section-020/module-01/course-02-match-events-and-branches.md
+    prompt: "You fix a broken `.tekton` file on `main`, but the open pull request still runs the old rule. Why?"
+    options:
+      - id: a
+        text: "The controller caches the template for one hour."
+        explanation: "Not correct. It reads the folder again for each event."
+      - id: b
+        text: "Pull requests use the `.tekton` folder of the oldest open branch."
+        explanation: "Not correct. There is no such rule."
+      - id: c
+        text: "The watcher must restart first."
+        explanation: "Not correct. The watcher does not read templates."
+      - id: d
+        text: "The pull request uses the `.tekton` folder of its own branch."
+        explanation: "Correct. Change the file on that branch, or merge `main` into it."
+    correct_option: d
+    explanation: "Correct. Change the file on that branch, or merge `main` into it."
+
+  - id: ats128-020-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use CEL expressions"
+    source_readings:
+      - sections/section-020/module-01/course-03-cel-paths-and-cleanup.md
+    prompt: "A PipelineRun has a correct `on-target-branch` and a CEL expression that is false for the event. What happens?"
+    options:
+      - id: a
+        text: "It does not run, because the CEL expression overrides the other matching annotations."
+        explanation: "Correct. Keep one way of matching per PipelineRun."
+      - id: b
+        text: "It runs, because `on-target-branch` matches."
+        explanation: "Not correct. The branch annotation is ignored when a CEL expression exists."
+      - id: c
+        text: "It runs only when both are true."
+        explanation: "Not correct. They are not combined."
+      - id: d
+        text: "The admission webhook refuses the file."
+        explanation: "Not correct. The webhook does not check templates."
+    correct_option: a
+    explanation: "Correct. Keep one way of matching per PipelineRun."
+
+  - id: ats128-020-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Match changed paths"
+    source_readings:
+      - sections/section-020/module-01/course-03-cel-paths-and-cleanup.md
+    prompt: "Which annotation runs a push PipelineRun only when a file under `app/` changed?"
+    options:
+      - id: a
+        text: "`pipelinesascode.tekton.dev/on-label: \"[app]\"`"
+        explanation: "Not correct. `on-label` matches pull request labels."
+      - id: b
+        text: "`pipelinesascode.tekton.dev/on-path-change: \"[app/**]\"`"
+        explanation: "Correct. It works together with `on-event` and `on-target-branch`."
+      - id: c
+        text: "`pipelinesascode.tekton.dev/on-target-branch: \"[app/**]\"`"
+        explanation: "Not correct. That matches branch names, not file paths."
+      - id: d
+        text: "`pipelinesascode.tekton.dev/max-keep-runs: \"app\"`"
+        explanation: "Not correct. That sets how many runs to keep."
+    correct_option: b
+    explanation: "Correct. It works together with `on-event` and `on-target-branch`."
+
+  - id: ats128-020-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Troubleshoot duplicate names"
+    source_readings:
+      - sections/section-020/module-01/course-03-cel-paths-and-cleanup.md
+    prompt: "Two files in `.tekton` define PipelineRuns with the same `metadata.name`. What does Pipelines-as-Code run for the event?"
+    options:
+      - id: a
+        text: "Only the first file in alphabetical order."
+        explanation: "Not correct. It does not pick one."
+      - id: b
+        text: "Both files, with random suffixes on the names."
+        explanation: "Not correct. The duplicate stops the whole event."
+      - id: c
+        text: "Nothing. It stops with an error, even for the correct PipelineRuns."
+        explanation: "Correct. The error is \"found multiple pipelinerun in .tekton with the same name\"."
+      - id: d
+        text: "Only the file that changed in the event."
+        explanation: "Not correct. Changed files are not used to resolve the clash."
+    correct_option: c
+    explanation: "Correct. The error is \"found multiple pipelinerun in .tekton with the same name\"."

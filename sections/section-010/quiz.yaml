@@ -1,0 +1,242 @@
+# Knowledge check for section 010. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats128-010
+course_id: ATS128
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-010
+  title: "Install Pipelines-as-Code And Connect A Repository"
+questions:
+  - id: ats128-010-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain where Pipelines-as-Code keeps its pipelines"
+    source_readings:
+      - sections/section-010/module-01/course-01-what-pipelines-as-code-is.md
+    prompt: "Where does Pipelines-as-Code read the PipelineRun templates that it runs?"
+    options:
+      - id: a
+        text: "From the `.tekton` folder at the top of the Git repository."
+        explanation: "Correct. Each file in `.tekton` is a PipelineRun template."
+      - id: b
+        text: "From a ConfigMap in the namespace `pipelines-as-code`."
+        explanation: "Not correct. The ConfigMap holds settings, not pipelines."
+      - id: c
+        text: "From a Secret next to the `Repository` object."
+        explanation: "Not correct. The Secret holds the token and the webhook secret."
+      - id: d
+        text: "From the `.github/workflows` folder of the repository."
+        explanation: "Not correct. That folder belongs to GitHub Actions."
+    correct_option: a
+    explanation: "Correct. Each file in `.tekton` is a PipelineRun template."
+
+  - id: ats128-010-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name the Pipelines-as-Code components"
+    source_readings:
+      - sections/section-010/module-01/course-01-what-pipelines-as-code-is.md
+    prompt: "Which component reports the final result of a finished PipelineRun back to the Git provider?"
+    options:
+      - id: a
+        text: "The pipelines-as-code-controller."
+        explanation: "Not correct. The controller receives the webhook and creates the run. It writes the first pending status only."
+      - id: b
+        text: "The pipelines-as-code-watcher."
+        explanation: "Correct. The watcher follows the runs and reports the final status."
+      - id: c
+        text: "The pipelines-as-code-webhook."
+        explanation: "Not correct. That is the admission webhook that validates `Repository` objects."
+      - id: d
+        text: "The Tekton Pipelines controller."
+        explanation: "Not correct. Tekton runs the PipelineRun but knows nothing about the Git provider."
+    correct_option: b
+    explanation: "Correct. The watcher follows the runs and reports the final status."
+
+  - id: ats128-010-q03
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Trace a Git event to a PipelineRun"
+    source_readings:
+      - sections/section-010/module-01/course-01-what-pipelines-as-code-is.md
+    prompt: "What does the pipelines-as-code-controller do first when it receives a webhook?"
+    options:
+      - id: a
+        text: "It deletes the old PipelineRuns of the repository."
+        explanation: "Not correct. Cleanup is a later task of the watcher."
+      - id: b
+        text: "It starts the Tasks of the PipelineRun in a new pod."
+        explanation: "Not correct. Tekton Pipelines starts the Tasks, not the controller."
+      - id: c
+        text: "It checks the signature and finds the matching `Repository` object."
+        explanation: "Correct. It then reads `.tekton` through the provider's API."
+      - id: d
+        text: "It asks the developer to approve the run in the cluster."
+        explanation: "Not correct. No approval is needed for an allowed sender."
+    correct_option: c
+    explanation: "Correct. It then reads `.tekton` through the provider's API."
+
+  - id: ats128-010-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Describe the Repository object"
+    source_readings:
+      - sections/section-010/module-01/course-01-what-pipelines-as-code-is.md
+    prompt: "A user creates a second `Repository` for a URL that already has one, in another namespace. What happens?"
+    options:
+      - id: a
+        text: "Both objects work and each namespace gets its own run."
+        explanation: "Not correct. Only one `Repository` may use a URL."
+      - id: b
+        text: "The newer object replaces the older one without a message."
+        explanation: "Not correct. Nothing is replaced. The new object is refused."
+      - id: c
+        text: "The controller picks the object in the alphabetically first namespace."
+        explanation: "Not correct. The controller is never given a choice, because the second object does not exist."
+      - id: d
+        text: "The admission webhook refuses it, because only one `Repository` may exist for a URL in the cluster."
+        explanation: "Correct. This stops a user from taking over another team's repository."
+    correct_option: d
+    explanation: "Correct. This stops a user from taking over another team's repository."
+
+  - id: ats128-010-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Tell a GitHub App from a GitHub webhook"
+    source_readings:
+      - sections/section-010/module-01/course-01-what-pipelines-as-code-is.md
+    prompt: "Where does Pipelines-as-Code show the result of a run when GitHub is connected with a GitHub webhook and a personal access token, not an App?"
+    options:
+      - id: a
+        text: "As a comment on the pull request."
+        explanation: "Correct. Without an App there is no Checks API."
+      - id: b
+        text: "In the Checks tab of the pull request."
+        explanation: "Not correct. Only a GitHub App uses the Checks API."
+      - id: c
+        text: "In the Actions tab of the repository."
+        explanation: "Not correct. Pipelines-as-Code does not use GitHub Actions."
+      - id: d
+        text: "As a new issue in the repository."
+        explanation: "Not correct. It never opens issues for results."
+    correct_option: a
+    explanation: "Correct. Without an App there is no Checks API."
+
+  - id: ats128-010-q06
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Install Pipelines-as-Code on Kubernetes"
+    source_readings:
+      - sections/section-010/module-01/course-02-install-pipelines-as-code.md
+    prompt: "Which release file do you apply to install Pipelines-as-Code on a plain Kubernetes cluster such as `kind`?"
+    options:
+      - id: a
+        text: "`release.yaml` of the pinned release."
+        explanation: "Not correct. That file is for OpenShift."
+      - id: b
+        text: "`release.k8s.yaml` of the pinned release."
+        explanation: "Correct. This file is for plain Kubernetes."
+      - id: c
+        text: "The `stable` branch link of the project."
+        explanation: "Not correct. A moving link changes with every release. Pin a release asset."
+      - id: d
+        text: "The Helm chart of the Tekton Dashboard."
+        explanation: "Not correct. The Dashboard is a different project."
+    correct_option: b
+    explanation: "Correct. This file is for plain Kubernetes."
+
+  - id: ats128-010-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find the webhook target port"
+    source_readings:
+      - sections/section-010/module-01/course-02-install-pipelines-as-code.md
+    prompt: "The controller container listens on port 8082. Which address must a Gitea webhook use from inside the cluster?"
+    options:
+      - id: a
+        text: "`http://pipelines-as-code-controller.pipelines-as-code.svc.cluster.local:8082`"
+        explanation: "Not correct. 8082 is the container port. The Service does not listen on it."
+      - id: b
+        text: "`http://pipelines-as-code-watcher.pipelines-as-code.svc.cluster.local:8080`"
+        explanation: "Not correct. The watcher does not receive webhooks."
+      - id: c
+        text: "`http://pipelines-as-code-controller.pipelines-as-code.svc.cluster.local:8080`"
+        explanation: "Correct. The Service publishes the controller on port 8080."
+      - id: d
+        text: "`http://pipelines-as-code-controller.pipelines-as-code.svc.cluster.local:9090`"
+        explanation: "Not correct. 9090 is the metrics port."
+    correct_option: c
+    explanation: "Correct. The Service publishes the controller on port 8080."
+
+  - id: ats128-010-q08
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Read the installation settings"
+    source_readings:
+      - sections/section-010/module-01/course-02-install-pipelines-as-code.md
+    prompt: "Which object holds the settings of the whole Pipelines-as-Code installation, such as `application-name`?"
+    options:
+      - id: a
+        text: "The ConfigMap `pipelines-as-code-info`."
+        explanation: "Not correct. That ConfigMap reports the installed version."
+      - id: b
+        text: "The Secret `pipelines-as-code-secret`."
+        explanation: "Not correct. That Secret holds GitHub App credentials."
+      - id: c
+        text: "The `Repository` custom resource."
+        explanation: "Not correct. A `Repository` configures one repository only."
+      - id: d
+        text: "The ConfigMap `pipelines-as-code` in the namespace `pipelines-as-code`."
+        explanation: "Correct. The application name is the prefix of every commit status."
+    correct_option: d
+    explanation: "Correct. The application name is the prefix of every commit status."
+
+  - id: ats128-010-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Connect a repository with a token and a webhook"
+    source_readings:
+      - sections/section-010/module-01/course-03-connect-a-repository.md
+    prompt: "A Secret stores the token under the key `token`. What must the `Repository` contain so that Pipelines-as-Code reads it?"
+    options:
+      - id: a
+        text: "`key: token` in `git_provider.secret`."
+        explanation: "Correct. Without `key`, Pipelines-as-Code reads `provider.token`."
+      - id: b
+        text: "Nothing. The key `token` is found automatically."
+        explanation: "Not correct. The default key is `provider.token`."
+      - id: c
+        text: "`token: true` in `spec.settings`."
+        explanation: "Not correct. That field does not exist."
+      - id: d
+        text: "The Secret in the namespace `pipelines-as-code`."
+        explanation: "Not correct. The Secret must sit in the namespace of the `Repository`."
+    correct_option: a
+    explanation: "Correct. Without `key`, Pipelines-as-Code reads `provider.token`."
+
+  - id: ats128-010-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Troubleshoot a repository that starts no run"
+    source_readings:
+      - sections/section-010/module-01/course-03-connect-a-repository.md
+    prompt: "A pull request starts no PipelineRun. The `Repository` URL uses `localhost`, but Gitea sends the in-cluster host name. Why does nothing run?"
+    options:
+      - id: a
+        text: "Gitea refuses to send webhooks to a `Repository`."
+        explanation: "Not correct. Gitea sends the webhook. The controller finds no match."
+      - id: b
+        text: "The controller compares the URL of the event with `spec.url`, and they differ, so no `Repository` matches."
+        explanation: "Correct. The URL must be exactly the address that Gitea puts in its webhooks."
+      - id: c
+        text: "Tekton Pipelines rejects the name `localhost`."
+        explanation: "Not correct. Tekton never sees the event."
+      - id: d
+        text: "The watcher deletes runs for unknown hosts."
+        explanation: "Not correct. The run is never created."
+    correct_option: b
+    explanation: "Correct. The URL must be exactly the address that Gitea puts in its webhooks."

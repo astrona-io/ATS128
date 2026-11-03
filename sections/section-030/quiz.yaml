@@ -1,0 +1,242 @@
+# Knowledge check for section 030. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats128-030
+course_id: ATS128
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-030
+  title: "Pull Request Status, Concurrency And Access Control"
+questions:
+  - id: ats128-030-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Read a commit status name"
+    source_readings:
+      - sections/section-030/module-01/course-01-status-reporting.md
+    prompt: "A template named `lint` runs for a pull request. What is the name (context) of its commit status with the default settings?"
+    options:
+      - id: a
+        text: "`lint`"
+        explanation: "Not correct. The application name is always the prefix."
+      - id: b
+        text: "`tekton / lint-x7k2p`"
+        explanation: "Not correct. The generated run name is not used in the status."
+      - id: c
+        text: "`Pipelines as Code CI / lint`"
+        explanation: "Correct. The prefix is the `application-name` setting, followed by the template name."
+      - id: d
+        text: "`Pipelines as Code CI / pull_request`"
+        explanation: "Not correct. The status uses the template name, not the event."
+    correct_option: c
+    explanation: "Correct. The prefix is the `application-name` setting, followed by the template name."
+
+  - id: ats128-030-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Find where Gitea shows results"
+    source_readings:
+      - sections/section-030/module-01/course-01-status-reporting.md
+    prompt: "With Gitea or Forgejo, where does Pipelines-as-Code report a pull request run?"
+    options:
+      - id: a
+        text: "In the Checks tab."
+        explanation: "Not correct. Only a GitHub App uses the Checks API."
+      - id: b
+        text: "Only in the controller log."
+        explanation: "Not correct. The result is written back to the provider."
+      - id: c
+        text: "As an email to the author."
+        explanation: "Not correct. Pipelines-as-Code does not send email."
+      - id: d
+        text: "As a commit status for each template and a comment on the pull request."
+        explanation: "Correct. Both are written by Pipelines-as-Code."
+    correct_option: d
+    explanation: "Correct. Both are written by Pipelines-as-Code."
+
+  - id: ats128-030-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read the status history"
+    source_readings:
+      - sections/section-030/module-01/course-01-status-reporting.md
+    prompt: "Gitea keeps every status of a commit. Which line is the current status of `Pipelines as Code CI / lint`?"
+    options:
+      - id: a
+        text: "The newest line with that name, which has the highest `id`."
+        explanation: "Correct. Older lines, such as `pending`, stay in the list."
+      - id: b
+        text: "The first line with that name."
+        explanation: "Not correct. The first line is usually the old `pending` status."
+      - id: c
+        text: "Any line, because they are all the same."
+        explanation: "Not correct. The states differ over time."
+      - id: d
+        text: "The line with the shortest description."
+        explanation: "Not correct. The length of the description means nothing."
+    correct_option: a
+    explanation: "Correct. Older lines, such as `pending`, stay in the list."
+
+  - id: ats128-030-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain who writes which status"
+    source_readings:
+      - sections/section-030/module-01/course-01-status-reporting.md
+    prompt: "Which component writes the `pending` status with the description `CI has Started`, and which writes the final status?"
+    options:
+      - id: a
+        text: "The watcher writes `pending`. The controller writes the final status."
+        explanation: "Not correct. The roles are the other way around."
+      - id: b
+        text: "The controller writes `pending` when it creates the runs. The watcher writes the final status."
+        explanation: "Correct. The watcher follows the run until it finishes."
+      - id: c
+        text: "Gitea writes both, from the webhook delivery."
+        explanation: "Not correct. Gitea does not know the run result."
+      - id: d
+        text: "Tekton Pipelines writes both."
+        explanation: "Not correct. Tekton does not talk to the Git provider."
+    correct_option: b
+    explanation: "Correct. The watcher follows the run until it finishes."
+
+  - id: ats128-030-q05
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Limit parallel runs"
+    source_readings:
+      - sections/section-030/module-01/course-02-concurrency.md
+    prompt: "Which field of the `Repository` limits how many PipelineRuns run at the same time?"
+    options:
+      - id: a
+        text: "`max-keep-runs`"
+        explanation: "Not correct. That is an annotation that deletes old runs."
+      - id: b
+        text: "`pipelinerun_provenance`"
+        explanation: "Not correct. That chooses where `.tekton` is read from."
+      - id: c
+        text: "`concurrency_limit`"
+        explanation: "Correct. The smallest value is `1`."
+      - id: d
+        text: "`cancel-in-progress`"
+        explanation: "Not correct. That is an annotation that cancels older runs."
+    correct_option: c
+    explanation: "Correct. The smallest value is `1`."
+
+  - id: ats128-030-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Describe the queue states"
+    source_readings:
+      - sections/section-030/module-01/course-02-concurrency.md
+    prompt: "A run is waiting in the queue because of `concurrency_limit`. What does the PipelineRun look like?"
+    options:
+      - id: a
+        text: "The run has failed with the reason `Queued`."
+        explanation: "Not correct. A queued run has not started and has not failed."
+      - id: b
+        text: "The run does not exist yet."
+        explanation: "Not correct. The controller creates it as pending."
+      - id: c
+        text: "The run is `started` but its pods are paused."
+        explanation: "Not correct. A pending run has no pods and no start time."
+      - id: d
+        text: "`spec.status` is `PipelineRunPending` and the label `pipelinesascode.tekton.dev/state` is `queued`."
+        explanation: "Correct. The watcher starts it when a slot is free."
+    correct_option: d
+    explanation: "Correct. The watcher starts it when a slot is free."
+
+  - id: ats128-030-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Apply a limit to existing runs"
+    source_readings:
+      - sections/section-030/module-01/course-02-concurrency.md
+    prompt: "You set `concurrency_limit: 1` while three runs are already running. What happens to them?"
+    options:
+      - id: a
+        text: "Nothing. The limit applies to events that arrive after the change."
+        explanation: "Correct. Push a new commit to see the queue."
+      - id: b
+        text: "Two of them are cancelled at once."
+        explanation: "Not correct. Existing runs are not changed."
+      - id: c
+        text: "All three are paused until one finishes."
+        explanation: "Not correct. Existing runs keep running."
+      - id: d
+        text: "The admission webhook refuses the change."
+        explanation: "Not correct. `1` is a valid value. Only `0` is refused."
+    correct_option: a
+    explanation: "Correct. Push a new commit to see the queue."
+
+  - id: ats128-030-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Know the cancel-in-progress limits"
+    source_readings:
+      - sections/section-030/module-01/course-02-concurrency.md
+    prompt: "Which statement about `cancel-in-progress` in v0.52.0 is correct?"
+    options:
+      - id: a
+        text: "It must always be used together with `concurrency_limit`."
+        explanation: "Not correct. The two do not work together."
+      - id: b
+        text: "It cannot be used together with `concurrency_limit` on the same repository."
+        explanation: "Correct. Choose one of the two."
+      - id: c
+        text: "It deletes the Tekton Pipelines controller's queue."
+        explanation: "Not correct. It cancels older runs of the same template."
+      - id: d
+        text: "It cancels runs of other repositories too."
+        explanation: "Not correct. It works on one template and one pull request or branch."
+    correct_option: b
+    explanation: "Correct. Choose one of the two."
+
+  - id: ats128-030-q09
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Know who may run pipelines"
+    source_readings:
+      - sections/section-030/module-01/course-03-access-control.md
+    prompt: "Which sender can run pipelines on a pull request without any approval?"
+    options:
+      - id: a
+        text: "Any user with a Gitea account."
+        explanation: "Not correct. Other users wait for approval."
+      - id: b
+        text: "Only users who commented `/retest` before."
+        explanation: "Not correct. `/retest` is not an approval."
+      - id: c
+        text: "A collaborator with write access."
+        explanation: "Correct. Owners, organization members and `OWNERS` entries are allowed too."
+      - id: d
+        text: "Only the pipelines-as-code-controller."
+        explanation: "Not correct. The controller checks senders. It is not one."
+    correct_option: c
+    explanation: "Correct. Owners, organization members and `OWNERS` entries are allowed too."
+
+  - id: ats128-030-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Approve an outside pull request"
+    source_readings:
+      - sections/section-030/module-01/course-03-access-control.md
+    prompt: "An outside contributor opens a pull request and its commit status is `pending - Pending approval, waiting for an /ok-to-test`. What starts the runs?"
+    options:
+      - id: a
+        text: "The contributor comments `/ok-to-test`."
+        explanation: "Not correct. Only an allowed user's comment counts."
+      - id: b
+        text: "The contributor comments `/retest`."
+        explanation: "Not correct. `/retest` reruns templates only for allowed users."
+      - id: c
+        text: "The watcher is restarted."
+        explanation: "Not correct. Restarting does not approve anything."
+      - id: d
+        text: "An allowed user comments `/ok-to-test` on the pull request."
+        explanation: "Correct. The approval covers the current commit only."
+    correct_option: d
+    explanation: "Correct. The approval covers the current commit only."

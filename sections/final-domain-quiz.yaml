@@ -1,0 +1,219 @@
+# Final domain quiz. Listed in astrona.yaml as the last `type: quiz` entry.
+schema_version: 1
+kind: question_bank
+id: ats128-final
+course_id: ATS128
+exam_code: TEKTON
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: domain
+  id: ats128
+  title: "Tekton: Pipelines-as-Code & Git-Native CI"
+questions:
+  - id: ats128-final-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain where Pipelines-as-Code keeps its pipelines"
+    source_readings:
+      - sections/section-010/module-01/course-01-what-pipelines-as-code-is.md
+    prompt: "Where does Pipelines-as-Code read the PipelineRun templates that it runs?"
+    options:
+      - id: a
+        text: "From a ConfigMap in the namespace `pipelines-as-code`."
+        explanation: "Not correct. The ConfigMap holds settings, not pipelines."
+      - id: b
+        text: "From the `.tekton` folder at the top of the Git repository."
+        explanation: "Correct. Each file in `.tekton` is a PipelineRun template."
+      - id: c
+        text: "From a Secret next to the `Repository` object."
+        explanation: "Not correct. The Secret holds the token and the webhook secret."
+      - id: d
+        text: "From the `.github/workflows` folder of the repository."
+        explanation: "Not correct. That folder belongs to GitHub Actions."
+    correct_option: b
+    explanation: "Correct. Each file in `.tekton` is a PipelineRun template."
+
+  - id: ats128-final-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Describe the Repository object"
+    source_readings:
+      - sections/section-010/module-01/course-01-what-pipelines-as-code-is.md
+    prompt: "A user creates a second `Repository` for a URL that already has one, in another namespace. What happens?"
+    options:
+      - id: a
+        text: "Both objects work and each namespace gets its own run."
+        explanation: "Not correct. Only one `Repository` may use a URL."
+      - id: b
+        text: "The newer object replaces the older one without a message."
+        explanation: "Not correct. Nothing is replaced. The new object is refused."
+      - id: c
+        text: "The admission webhook refuses it, because only one `Repository` may exist for a URL in the cluster."
+        explanation: "Correct. This stops a user from taking over another team's repository."
+      - id: d
+        text: "The controller picks the object in the alphabetically first namespace."
+        explanation: "Not correct. The controller is never given a choice, because the second object does not exist."
+    correct_option: c
+    explanation: "Correct. This stops a user from taking over another team's repository."
+
+  - id: ats128-final-q03
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Troubleshoot a repository that starts no run"
+    source_readings:
+      - sections/section-010/module-01/course-03-connect-a-repository.md
+    prompt: "A pull request starts no PipelineRun. The `Repository` URL uses `localhost`, but Gitea sends the in-cluster host name. Why does nothing run?"
+    options:
+      - id: a
+        text: "Gitea refuses to send webhooks to a `Repository`."
+        explanation: "Not correct. Gitea sends the webhook. The controller finds no match."
+      - id: b
+        text: "Tekton Pipelines rejects the name `localhost`."
+        explanation: "Not correct. Tekton never sees the event."
+      - id: c
+        text: "The watcher deletes runs for unknown hosts."
+        explanation: "Not correct. The run is never created."
+      - id: d
+        text: "The controller compares the URL of the event with `spec.url`, and they differ, so no `Repository` matches."
+        explanation: "Correct. The URL must be exactly the address that Gitea puts in its webhooks."
+    correct_option: d
+    explanation: "Correct. The URL must be exactly the address that Gitea puts in its webhooks."
+
+  - id: ats128-final-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Tell the two kinds of variables apart"
+    source_readings:
+      - sections/section-020/module-01/course-01-the-tekton-directory.md
+    prompt: "Which statement about `{{ revision }}` and `$(params.revision)` is correct?"
+    options:
+      - id: a
+        text: "Pipelines-as-Code fills `{{ revision }}` before the PipelineRun exists. Tekton fills `$(params.revision)` when the run starts."
+        explanation: "Correct. The PipelineRun object in the cluster contains no `{{ }}`."
+      - id: b
+        text: "Tekton fills both at the same time, when the run starts."
+        explanation: "Not correct. Tekton does not know the `{{ }}` syntax."
+      - id: c
+        text: "Pipelines-as-Code fills both, before the run exists."
+        explanation: "Not correct. `$(params.x)` is a Tekton variable."
+      - id: d
+        text: "They are two spellings of the same variable."
+        explanation: "Not correct. They are replaced by different programs at different times."
+    correct_option: a
+    explanation: "Correct. The PipelineRun object in the cluster contains no `{{ }}`."
+
+  - id: ats128-final-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Spot a wrong event name"
+    source_readings:
+      - sections/section-020/module-01/course-02-match-events-and-branches.md
+    prompt: "A template says `on-event: \"[pull-request]\"`. What happens when a pull request is opened?"
+    options:
+      - id: a
+        text: "The run starts, because dashes and underscores are the same."
+        explanation: "Not correct. Event names are fixed words."
+      - id: b
+        text: "Nothing matches, and Pipelines-as-Code does not warn on the pull request."
+        explanation: "Correct. The correct name has an underscore: `pull_request`."
+      - id: c
+        text: "The admission webhook refuses the pull request."
+        explanation: "Not correct. The admission webhook checks `Repository` objects only."
+      - id: d
+        text: "The controller changes the name and starts the run."
+        explanation: "Not correct. It does not correct names."
+    correct_option: b
+    explanation: "Correct. The correct name has an underscore: `pull_request`."
+
+  - id: ats128-final-q06
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Troubleshoot duplicate names"
+    source_readings:
+      - sections/section-020/module-01/course-03-cel-paths-and-cleanup.md
+    prompt: "Two files in `.tekton` define PipelineRuns with the same `metadata.name`. What does Pipelines-as-Code run for the event?"
+    options:
+      - id: a
+        text: "Only the first file in alphabetical order."
+        explanation: "Not correct. It does not pick one."
+      - id: b
+        text: "Both files, with random suffixes on the names."
+        explanation: "Not correct. The duplicate stops the whole event."
+      - id: c
+        text: "Nothing. It stops with an error, even for the correct PipelineRuns."
+        explanation: "Correct. The error is \"found multiple pipelinerun in .tekton with the same name\"."
+      - id: d
+        text: "Only the file that changed in the event."
+        explanation: "Not correct. Changed files are not used to resolve the clash."
+    correct_option: c
+    explanation: "Correct. The error is \"found multiple pipelinerun in .tekton with the same name\"."
+
+  - id: ats128-final-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain who writes which status"
+    source_readings:
+      - sections/section-030/module-01/course-01-status-reporting.md
+    prompt: "Which component writes the `pending` status with the description `CI has Started`, and which writes the final status?"
+    options:
+      - id: a
+        text: "The watcher writes `pending`. The controller writes the final status."
+        explanation: "Not correct. The roles are the other way around."
+      - id: b
+        text: "Gitea writes both, from the webhook delivery."
+        explanation: "Not correct. Gitea does not know the run result."
+      - id: c
+        text: "Tekton Pipelines writes both."
+        explanation: "Not correct. Tekton does not talk to the Git provider."
+      - id: d
+        text: "The controller writes `pending` when it creates the runs. The watcher writes the final status."
+        explanation: "Correct. The watcher follows the run until it finishes."
+    correct_option: d
+    explanation: "Correct. The watcher follows the run until it finishes."
+
+  - id: ats128-final-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Describe the queue states"
+    source_readings:
+      - sections/section-030/module-01/course-02-concurrency.md
+    prompt: "A run is waiting in the queue because of `concurrency_limit`. What does the PipelineRun look like?"
+    options:
+      - id: a
+        text: "`spec.status` is `PipelineRunPending` and the label `pipelinesascode.tekton.dev/state` is `queued`."
+        explanation: "Correct. The watcher starts it when a slot is free."
+      - id: b
+        text: "The run has failed with the reason `Queued`."
+        explanation: "Not correct. A queued run has not started and has not failed."
+      - id: c
+        text: "The run does not exist yet."
+        explanation: "Not correct. The controller creates it as pending."
+      - id: d
+        text: "The run is `started` but its pods are paused."
+        explanation: "Not correct. A pending run has no pods and no start time."
+    correct_option: a
+    explanation: "Correct. The watcher starts it when a slot is free."
+
+  - id: ats128-final-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Approve an outside pull request"
+    source_readings:
+      - sections/section-030/module-01/course-03-access-control.md
+    prompt: "An outside contributor opens a pull request and its commit status is `pending - Pending approval, waiting for an /ok-to-test`. What starts the runs?"
+    options:
+      - id: a
+        text: "The contributor comments `/ok-to-test`."
+        explanation: "Not correct. Only an allowed user's comment counts."
+      - id: b
+        text: "An allowed user comments `/ok-to-test` on the pull request."
+        explanation: "Correct. The approval covers the current commit only."
+      - id: c
+        text: "The contributor comments `/retest`."
+        explanation: "Not correct. `/retest` reruns templates only for allowed users."
+      - id: d
+        text: "The watcher is restarted."
+        explanation: "Not correct. Restarting does not approve anything."
+    correct_option: b
+    explanation: "Correct. The approval covers the current commit only."

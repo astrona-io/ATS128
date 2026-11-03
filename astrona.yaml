@@ -134,6 +134,10 @@ modules:
             url: https://pipelinesascode.com/docs/providers/forgejo/
           - name: "Installation on Kubernetes"
             url: https://pipelinesascode.com/docs/installation/kubernetes/
+      - type: quiz
+        title: "Knowledge Check: Install Pipelines-as-Code And Connect A Repository"
+        path: sections/section-010/quiz.yaml
+        pass_score: 70
 
   - id: module-020
     title: "The .tekton Directory And Event Matching"
@@ -207,6 +211,10 @@ modules:
             url: https://pipelinesascode.com/docs/guides/event-matching/cel-expressions/
           - name: "PipelineRuns cleanup"
             url: https://pipelinesascode.com/docs/advanced/cleanup/
+      - type: quiz
+        title: "Knowledge Check: The .tekton Directory And Event Matching"
+        path: sections/section-020/quiz.yaml
+        pass_score: 70
 
   - id: module-030
     title: "Pull Request Status, Concurrency And Access Control"
@@ -280,3 +288,11 @@ modules:
             url: https://pipelinesascode.com/docs/guides/gitops-commands/
           - name: "Forgejo and Gitea provider"
             url: https://pipelinesascode.com/docs/providers/forgejo/
+      - type: quiz
+        title: "Knowledge Check: Pull Request Status, Concurrency And Access Control"
+        path: sections/section-030/quiz.yaml
+        pass_score: 70
+      - type: quiz
+        title: "Final Domain Quiz"
+        path: sections/final-domain-quiz.yaml
+        pass_score: 70
