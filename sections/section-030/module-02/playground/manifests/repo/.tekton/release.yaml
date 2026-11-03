@@ -1,0 +1,69 @@
+# Pipelines-as-Code runs this PipelineRun when an incoming webhook asks for it.
+# The value of the parameter environment is a custom variable. The Repository
+# lists environment in the params of its incoming webhook, so the caller of
+# the webhook can set it in the request body.
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: release
+  annotations:
+    pipelinesascode.tekton.dev/on-event: "[incoming]"
+    pipelinesascode.tekton.dev/on-target-branch: "[main]"
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+spec:
+  params:
+    - name: repo_url
+      value: "{{ repo_url }}"
+    - name: revision
+      value: "{{ revision }}"
+    - name: environment
+      value: "{{ environment }}"
+  pipelineSpec:
+    params:
+      - name: repo_url
+        type: string
+      - name: revision
+        type: string
+      - name: environment
+        type: string
+    tasks:
+      - name: release
+        params:
+          - name: repo_url
+            value: $(params.repo_url)
+          - name: revision
+            value: $(params.revision)
+          - name: environment
+            value: $(params.environment)
+        taskSpec:
+          params:
+            - name: repo_url
+              type: string
+            - name: revision
+              type: string
+            - name: environment
+              type: string
+          steps:
+            - name: clone
+              image: alpine/git:v2.52.0
+              workingDir: /workspace
+              script: |
+                #!/bin/sh
+                set -eu
+                # The workspace folder belongs to another user than this step, so git
+                # must be told that the clone is safe to use.
+                git config --global --add safe.directory /workspace/source
+                git clone --quiet "$(params.repo_url)" source
+                cd source
+                git checkout --quiet "$(params.revision)"
+                echo "Checked out $(params.revision)"
+            - name: release
+              image: busybox:1.37.0
+              workingDir: /workspace/source
+              script: |
+                #!/bin/sh
+                set -eu
+                echo "Releasing version $(cat app/VERSION) to $(params.environment)"
+                case "$(params.environment)" in
+                  *'{{'*) echo "The parameter environment was not replaced."; exit 1 ;;
+                esac

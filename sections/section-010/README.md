@@ -17,7 +17,7 @@ You first learn the model: the `.tekton` folder, the path from a webhook to a Pi
 
 ## The learning path
 
-The section has one module. It has a landing page, three short parts, a graded lab right after the part it tests, and a summary. The module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
+The section has two modules. It has a landing page, three short parts, a graded lab right after the part it tests, and a summary. Each module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
 
 ### 1. Connect A Git Repository To Pipelines-as-Code
 
@@ -27,6 +27,16 @@ The module starts at its landing page, which also launches the playground. The p
 2. Install Pipelines-as-Code And The tkn pac Plugin
 3. Connect A Repository With A Token And A Webhook, followed by the lab **Connect A Gitea Repository To Pipelines-as-Code**
 4. Summary
+
+### 2. Operate The Repository Connection
+
+The second module has a landing page, four parts, a graded lab, and a summary. It has its own playground with Pipelines-as-Code installed and a connected Gitea repository.
+
+1. The Repository Object In Detail
+2. Global Settings In The pipelines-as-code ConfigMap
+3. Tokens, Webhook Events And The tkn pac Commands
+4. Choose Where Pipeline Definitions Come From, followed by the lab **Run Pull Requests With The Pipeline From The Default Branch**
+5. Summary
 
 ## Section capstone: Repair A Broken Repository Connection
 

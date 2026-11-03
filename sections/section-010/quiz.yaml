@@ -240,3 +240,233 @@ questions:
         explanation: "Not correct. The run is never created."
     correct_option: b
     explanation: "Correct. The URL must be exactly the address that Gitea puts in its webhooks."
+
+  - id: ats128-010-q11
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name the fields of a Repository spec"
+    source_readings:
+      - sections/section-010/module-02/course-01-the-repository-object.md
+    prompt: "Which `Repository` field limits how many PipelineRuns of one repository run at the same time?"
+    options:
+      - id: a
+        text: "`spec.settings.max_runs`"
+        explanation: "Not correct. That field does not exist."
+      - id: b
+        text: "`spec.concurrency_limit`"
+        explanation: "Correct. The rest of the runs wait in a queue."
+      - id: c
+        text: "`spec.params`"
+        explanation: "Not correct. `params` defines custom variables."
+      - id: d
+        text: "`spec.incoming`"
+        explanation: "Not correct. `incoming` configures incoming webhooks."
+    correct_option: b
+    explanation: "Correct. The rest of the runs wait in a queue."
+
+  - id: ats128-010-q12
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain the namespace rule"
+    source_readings:
+      - sections/section-010/module-02/course-01-the-repository-object.md
+    prompt: "In which namespace does Pipelines-as-Code create the PipelineRuns of an event?"
+    options:
+      - id: a
+        text: "In `pipelines-as-code`, next to the controller."
+        explanation: "Not correct. The controller does not run pipelines in its own namespace."
+      - id: b
+        text: "In `tekton-pipelines`."
+        explanation: "Not correct. That namespace holds Tekton itself."
+      - id: c
+        text: "In the namespace of the `Repository` that matched the event."
+        explanation: "Correct. Secrets and ServiceAccounts for the run belong there too."
+      - id: d
+        text: "In the namespace named in each `.tekton` file."
+        explanation: "Not correct. The template does not choose the namespace."
+    correct_option: c
+    explanation: "Correct. Secrets and ServiceAccounts for the run belong there too."
+
+  - id: ats128-010-q13
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain why a second Repository breaks matching"
+    source_readings:
+      - sections/section-010/module-02/course-01-the-repository-object.md
+    prompt: "A repository suddenly starts no runs. `kubectl get repositories.pipelinesascode.tekton.dev -A` shows two objects with the same `url` in different namespaces. What is the effect?"
+    options:
+      - id: a
+        text: "Both namespaces get a copy of every run."
+        explanation: "Not correct. The controller does not create runs for two matches."
+      - id: b
+        text: "The newer object wins."
+        explanation: "Not correct. Age does not decide."
+      - id: c
+        text: "The watcher deletes the older object."
+        explanation: "Not correct. The watcher does not delete a `Repository`."
+      - id: d
+        text: "The controller finds two matches and cannot decide, so it runs nothing."
+        explanation: "Correct. One URL must map to one `Repository`."
+    correct_option: d
+    explanation: "Correct. One URL must map to one `Repository`."
+
+  - id: ats128-010-q14
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Change the application name"
+    source_readings:
+      - sections/section-010/module-02/course-02-global-settings.md
+    prompt: "Which key of the ConfigMap `pipelines-as-code` sets the first part of the commit status name?"
+    options:
+      - id: a
+        text: "`application-name`"
+        explanation: "Correct. The status context is the application name, a slash and the PipelineRun name."
+      - id: b
+        text: "`status-prefix`"
+        explanation: "Not correct. That key does not exist."
+      - id: c
+        text: "`hub-url`"
+        explanation: "Not correct. That key is the catalog address."
+      - id: d
+        text: "`default-max-keep-runs`"
+        explanation: "Not correct. That key sets how many runs are kept."
+    correct_option: a
+    explanation: "Correct. The status context is the application name, a slash and the PipelineRun name."
+
+  - id: ats128-010-q15
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain the effect of a ConfigMap change"
+    source_readings:
+      - sections/section-010/module-02/course-02-global-settings.md
+    prompt: "You change `application-name` in the ConfigMap. What happens to commit statuses that were set before?"
+    options:
+      - id: a
+        text: "They are renamed by the watcher."
+        explanation: "Not correct. The watcher does not rewrite old statuses."
+      - id: b
+        text: "They keep the old name. Only new runs use the new one."
+        explanation: "Correct. Gitea stores the status context as text."
+      - id: c
+        text: "They are deleted."
+        explanation: "Not correct. Nothing removes them."
+      - id: d
+        text: "Every run is restarted."
+        explanation: "Not correct. A change affects new events only."
+    correct_option: b
+    explanation: "Correct. Gitea stores the status context as text."
+
+  - id: ats128-010-q16
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Replace a token safely"
+    source_readings:
+      - sections/section-010/module-02/course-03-tokens-and-webhook-events.md
+    prompt: "You rotate the provider token by creating the Secret again with only the key `provider.token`. What breaks?"
+    options:
+      - id: a
+        text: "Nothing. The controller keeps the old webhook secret."
+        explanation: "Not correct. The controller reads the Secret for each event."
+      - id: b
+        text: "The `Repository` is deleted."
+        explanation: "Not correct. The object does not depend on the Secret's lifetime."
+      - id: c
+        text: "The webhook secret is gone, so webhook requests fail the signature check."
+        explanation: "Correct. Write both keys again when you replace the Secret."
+      - id: d
+        text: "The CRD is removed."
+        explanation: "Not correct. A Secret change does not touch the CRD."
+    correct_option: c
+    explanation: "Correct. Write both keys again when you replace the Secret."
+
+  - id: ats128-010-q17
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find the failing side from the controller log"
+    source_readings:
+      - sections/section-010/module-02/course-03-tokens-and-webhook-events.md
+    prompt: "After a push the controller log has no line for your push. Where is the problem most likely?"
+    options:
+      - id: a
+        text: "The token has too few rights."
+        explanation: "Not correct. A token problem shows as a failed API call in the log."
+      - id: b
+        text: "`max-keep-runs` is too low."
+        explanation: "Not correct. It acts after a run exists."
+      - id: c
+        text: "The template has a wrong `on-event`."
+        explanation: "Not correct. The controller would log the event first."
+      - id: d
+        text: "The webhook request did not reach the controller: check the webhook URL, events and deliveries on the Git server."
+        explanation: "Correct. Nothing in the cluster can log a request that never arrived."
+    correct_option: d
+    explanation: "Correct. Nothing in the cluster can log a request that never arrived."
+
+  - id: ats128-010-q18
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Set pipelinerun_provenance"
+    source_readings:
+      - sections/section-010/module-02/course-04-choose-where-definitions-come-from.md
+    prompt: "Which value of `settings.pipelinerun_provenance` makes a pull request run the pipelines of the default branch?"
+    options:
+      - id: a
+        text: "`default_branch`"
+        explanation: "Correct. The changed file in the pull request is not used."
+      - id: b
+        text: "`source`"
+        explanation: "Not correct. `source` reads the files from the commit of the event."
+      - id: c
+        text: "`main`"
+        explanation: "Not correct. That is not a valid value."
+      - id: d
+        text: "`protected`"
+        explanation: "Not correct. That is not a valid value."
+    correct_option: a
+    explanation: "Correct. The changed file in the pull request is not used."
+
+  - id: ats128-010-q19
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain the risk of the source setting"
+    source_readings:
+      - sections/section-010/module-02/course-04-choose-where-definitions-come-from.md
+    prompt: "With the default `source` setting, what can a collaborator do in their own pull request?"
+    options:
+      - id: a
+        text: "Nothing. Templates are always read from the default branch."
+        explanation: "Not correct. That is the `default_branch` setting."
+      - id: b
+        text: "Change a template in `.tekton`, and the pull request runs the changed version."
+        explanation: "Correct. The pipeline runs with the Secrets and ServiceAccount of the namespace."
+      - id: c
+        text: "Change the `Repository` object."
+        explanation: "Not correct. The object is in the cluster, not in Git."
+      - id: d
+        text: "Skip `/ok-to-test` for strangers."
+        explanation: "Not correct. The gate for strangers is a separate rule."
+    correct_option: b
+    explanation: "Correct. The pipeline runs with the Secrets and ServiceAccount of the namespace."
+
+  - id: ats128-010-q20
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Choose default_branch for a repository that takes outside pull requests"
+    source_readings:
+      - sections/section-010/module-02/course-04-choose-where-definitions-come-from.md
+    prompt: "A team switches a repository to `default_branch`. A developer opens a pull request that adds a new template. What happens?"
+    options:
+      - id: a
+        text: "The template runs, because pull requests always use their own files."
+        explanation: "Not correct. That is the `source` setting."
+      - id: b
+        text: "The controller rejects the pull request."
+        explanation: "Not correct. The pull request is tested with the pipelines of the default branch."
+      - id: c
+        text: "The new template does not run in the pull request, because it is not on the default branch yet."
+        explanation: "Correct. A new pipeline takes effect after the merge."
+      - id: d
+        text: "The template runs on the next push to any branch."
+        explanation: "Not correct. Only the default branch counts."
+    correct_option: c
+    explanation: "Correct. A new pipeline takes effect after the merge."

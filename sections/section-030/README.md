@@ -17,7 +17,7 @@ You first follow a run's result back to the Git provider: commit statuses and co
 
 ## The learning path
 
-The section has one module. It has a landing page, three short parts, a graded lab right after the part it tests, and a summary. The module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
+The section has two modules. It has a landing page, three short parts, a graded lab right after the part it tests, and a summary. Each module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
 
 ### 1. Control How Pipeline Runs Report, Queue And Start
 
@@ -27,6 +27,16 @@ The module starts at its landing page, which also launches the playground. The p
 2. Queue Runs With concurrency_limit, followed by the lab **Queue Pull Request Runs With concurrency_limit**
 3. Control Who Can Run Pipelines
 4. Summary
+
+### 2. Comments, Incoming Webhooks And Troubleshooting
+
+The second module has a landing page, four parts, a graded lab, and a summary. It has its own playground with a second Gitea user and templates for comments and incoming webhooks.
+
+1. Comment Commands On A Pull Request
+2. Run A Template From A Comment
+3. Incoming Webhooks, followed by the lab **Start A Pipeline With An Incoming Webhook**
+4. Find Out Why A Run Did Not Start
+5. Summary
 
 ## Section capstone: Gate An Outside Contributor's Pull Request
 

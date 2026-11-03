@@ -1,0 +1,59 @@
+# Define Custom Parameters On The Repository
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-128-lab-020-02"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-tekton-pac"
+      description: "Installs the tkn CLI 0.46.2, tkn-pac 0.52.0, Tekton Pipelines v1.17.1, Pipelines-as-Code v0.52.0 and Gitea with the user starfleet and a token"
+      type: "file"
+      source: "bootstrap/01-install-tekton-pac.sh"
+    - name: "ats-128-lab-020-02-setup"
+      description: "Seeds starfleet/bridge-app, connects it, and opens pull request #1 from feature-params, whose first run fails"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+  manifests:
+    - name: "lab-start"
+      description: "The namespaces starfleet and gitea, Gitea and the tester pod"
+      type: "file"
+      source: "manifests/lab-start.yaml"
+testing:
+  init:
+    - name: "wait-for-environment"
+      description: "Waits until Tekton, Pipelines-as-Code and Gitea are ready"
+      type: "file"
+      source: "testing/wait-for-environment.sh"
+    - name: "reference-solution"
+      description: "The fix a correct learner makes; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-repository-params"
+      description: "Confirms the Repository bridge-app defines deploy_target and log_level and the template on main still uses the variables"
+      type: "file"
+      source: "validation/validate-repository-params.sh"
+    - name: "validate-pull-request-run"
+      description: "Confirms the newest PipelineRun of the head of pull request #1 got both values and succeeded"
+      type: "file"
+      source: "validation/validate-pull-request-run.sh"
+    - name: "validate-commit-status"
+      description: "Confirms Gitea shows 'Pipelines as Code CI / pull-request' = success on that commit"
+      type: "file"
+      source: "validation/validate-commit-status.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - busybox:1.37.0
+      - alpine/git:v2.52.0
+      - gitea/gitea:28.2.0-rootless
+      - nicolaka/netshoot:v0.13

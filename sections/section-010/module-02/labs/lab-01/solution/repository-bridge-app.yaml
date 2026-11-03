@@ -1,0 +1,21 @@
+# The Repository bridge-app with pipelinerun_provenance set to default_branch:
+# Pipelines-as-Code reads .tekton from the default branch of the repository,
+# not from the branch of the pull request.
+apiVersion: pipelinesascode.tekton.dev/v1alpha1
+kind: Repository
+metadata:
+  name: bridge-app
+  namespace: starfleet
+spec:
+  url: "http://gitea-http.gitea.svc.cluster.local:3000/starfleet/bridge-app"
+  git_provider:
+    type: gitea
+    url: "http://gitea-http.gitea.svc.cluster.local:3000"
+    secret:
+      name: gitea-webhook-config
+      key: provider.token
+    webhook_secret:
+      name: gitea-webhook-config
+      key: webhook.secret
+  settings:
+    pipelinerun_provenance: default_branch

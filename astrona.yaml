@@ -113,6 +113,45 @@ modules:
         path: sections/section-010/module-01/course-04-summary.md
 
       - type: reading
+        title: "Operate The Repository Connection"
+        path: sections/section-010/module-02/course.md
+      - type: reading
+        title: "The Repository Object In Detail"
+        path: sections/section-010/module-02/course-01-the-repository-object.md
+      - type: reading
+        title: "Global Settings In The pipelines-as-code ConfigMap"
+        path: sections/section-010/module-02/course-02-global-settings.md
+      - type: reading
+        title: "Tokens, Webhook Events And The tkn pac Commands"
+        path: sections/section-010/module-02/course-03-tokens-and-webhook-events.md
+      - type: reading
+        title: "Choose Where Pipeline Definitions Come From"
+        path: sections/section-010/module-02/course-04-choose-where-definitions-come-from.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Run Pull Requests With The Pipeline From The Default Branch Lab"
+        path: sections/section-010/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: repository-connection
+        task_kind: troubleshooting
+        tags: [repository-crd, git-provider, gitea, pipelinerun, commit-status]
+        learning_goals:
+          - Find why a pull request is tested with a tampered pipeline
+          - Set pipelinerun_provenance to default_branch on the Repository
+          - Prove that the new run uses the pipeline of main and succeeds
+        resources:
+          - name: "Repository CR"
+            url: https://pipelinesascode.com/docs/guides/repository-crd/
+          - name: "Forgejo and Gitea provider"
+            url: https://pipelinesascode.com/docs/providers/forgejo/
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-02/course-05-summary.md
+
+      - type: reading
         title: Question
         path: sections/section-010/capstone/labs/lab-01/question.md
       - type: lab
@@ -190,6 +229,45 @@ modules:
         path: sections/section-020/module-01/course-04-summary.md
 
       - type: reading
+        title: "Parameters, Secrets, Tasks And Resolving"
+        path: sections/section-020/module-02/course.md
+      - type: reading
+        title: "Custom Parameters On The Repository"
+        path: sections/section-020/module-02/course-01-custom-parameters.md
+      - type: reading
+        title: Question
+        path: sections/section-020/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Define Custom Parameters On The Repository Lab"
+        path: sections/section-020/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: event-matching
+        task_kind: troubleshooting
+        tags: [dynamic-variables, repository-crd, pipelinerun, tekton-directory, commit-status]
+        learning_goals:
+          - Find which dynamic variables have no value in a failed run
+          - Define the custom parameters on the Repository without changing the template
+          - Prove that the restarted run received both values
+        resources:
+          - name: "Authoring PipelineRuns and dynamic variables"
+            url: https://pipelinesascode.com/docs/guides/creating-pipelines/
+          - name: "Repository CR"
+            url: https://pipelinesascode.com/docs/guides/repository-crd/
+      - type: reading
+        title: "Secrets And The Git Provider Token In A Run"
+        path: sections/section-020/module-02/course-02-secrets-and-git-token.md
+      - type: reading
+        title: "Local And Remote Tasks And Pipelines"
+        path: sections/section-020/module-02/course-03-local-and-remote-tasks.md
+      - type: reading
+        title: "Resolve Templates And Find Authoring Errors"
+        path: sections/section-020/module-02/course-04-resolve-and-author-errors.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-02/course-05-summary.md
+
+      - type: reading
         title: Question
         path: sections/section-020/capstone/labs/lab-01/question.md
       - type: lab
@@ -265,6 +343,45 @@ modules:
       - type: reading
         title: Summary
         path: sections/section-030/module-01/course-04-summary.md
+
+      - type: reading
+        title: "Comments, Incoming Webhooks And Troubleshooting"
+        path: sections/section-030/module-02/course.md
+      - type: reading
+        title: "Comment Commands On A Pull Request"
+        path: sections/section-030/module-02/course-01-comment-commands.md
+      - type: reading
+        title: "Run A Template From A Comment"
+        path: sections/section-030/module-02/course-02-run-from-a-comment.md
+      - type: reading
+        title: "Incoming Webhooks"
+        path: sections/section-030/module-02/course-03-incoming-webhooks.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Start A Pipeline With An Incoming Webhook Lab"
+        path: sections/section-030/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: repository-connection
+        task_kind: build
+        tags: [repository-crd, webhook, webhook-secret, on-event, pipelinerun]
+        learning_goals:
+          - Add an incoming webhook to the Repository with a Secret, a target branch and a param
+          - Call the incoming webhook so that the release pipeline runs on main
+          - Prove the run has the event type incoming and the environment staging
+        resources:
+          - name: "Repository CR"
+            url: https://pipelinesascode.com/docs/guides/repository-crd/
+          - name: "Running the PipelineRun and ACL"
+            url: https://pipelinesascode.com/docs/guides/running-pipelines/
+      - type: reading
+        title: "Find Out Why A Run Did Not Start"
+        path: sections/section-030/module-02/course-04-why-a-run-did-not-start.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-030/module-02/course-05-summary.md
 
       - type: reading
         title: Question

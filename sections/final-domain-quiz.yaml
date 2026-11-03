@@ -217,3 +217,141 @@ questions:
         explanation: "Not correct. Restarting does not approve anything."
     correct_option: b
     explanation: "Correct. The approval covers the current commit only."
+
+  - id: ats128-final-q11
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain why a second Repository breaks matching"
+    source_readings:
+      - sections/section-010/module-02/course-01-the-repository-object.md
+    prompt: "A repository suddenly starts no runs. `kubectl get repositories.pipelinesascode.tekton.dev -A` shows two objects with the same `url` in different namespaces. What is the effect?"
+    options:
+      - id: a
+        text: "Both namespaces get a copy of every run."
+        explanation: "Not correct. The controller does not create runs for two matches."
+      - id: b
+        text: "The newer object wins."
+        explanation: "Not correct. Age does not decide."
+      - id: c
+        text: "The watcher deletes the older object."
+        explanation: "Not correct. The watcher does not delete a `Repository`."
+      - id: d
+        text: "The controller finds two matches and cannot decide, so it runs nothing."
+        explanation: "Correct. One URL must map to one `Repository`."
+    correct_option: d
+    explanation: "Correct. One URL must map to one `Repository`."
+
+  - id: ats128-final-q12
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain the risk of the source setting"
+    source_readings:
+      - sections/section-010/module-02/course-04-choose-where-definitions-come-from.md
+    prompt: "With the default `source` setting, what can a collaborator do in their own pull request?"
+    options:
+      - id: a
+        text: "Change a template in `.tekton`, and the pull request runs the changed version."
+        explanation: "Correct. The pipeline runs with the Secrets and ServiceAccount of the namespace."
+      - id: b
+        text: "Nothing. Templates are always read from the default branch."
+        explanation: "Not correct. That is the `default_branch` setting."
+      - id: c
+        text: "Change the `Repository` object."
+        explanation: "Not correct. The object is in the cluster, not in Git."
+      - id: d
+        text: "Skip `/ok-to-test` for strangers."
+        explanation: "Not correct. The gate for strangers is a separate rule."
+    correct_option: a
+    explanation: "Correct. The pipeline runs with the Secrets and ServiceAccount of the namespace."
+
+  - id: ats128-final-q13
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read an unreplaced variable"
+    source_readings:
+      - sections/section-020/module-02/course-01-custom-parameters.md
+    prompt: "A run starts, but a parameter holds the text `{{ deploy_target }}`. What does that show?"
+    options:
+      - id: a
+        text: "The CRD is missing."
+        explanation: "Not correct. The run was created."
+      - id: b
+        text: "No custom parameter or built-in variable has that name for this event."
+        explanation: "Correct. Variables with no value stay as literal text."
+      - id: c
+        text: "Tekton failed to start the pod."
+        explanation: "Not correct. Tekton never sees the braces replaced."
+      - id: d
+        text: "The webhook secret is wrong."
+        explanation: "Not correct. A wrong secret stops the run from being created."
+    correct_option: b
+    explanation: "Correct. Variables with no value stay as literal text."
+
+  - id: ats128-final-q14
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Pass a Secret value to a run"
+    source_readings:
+      - sections/section-020/module-02/course-02-secrets-and-git-token.md
+    prompt: "How does a `Repository` parameter take its value from a Secret?"
+    options:
+      - id: a
+        text: "With `value: secret/name/key`."
+        explanation: "Not correct. That is not a reference."
+      - id: b
+        text: "With the annotation `secret` on the template."
+        explanation: "Not correct. No such annotation exists."
+      - id: c
+        text: "With `secret_ref`, giving the Secret `name` and `key`."
+        explanation: "Correct. The Secret must be in the namespace of the `Repository`."
+      - id: d
+        text: "The controller copies every Secret automatically."
+        explanation: "Not correct. Only referenced Secrets are read."
+    correct_option: c
+    explanation: "Correct. The Secret must be in the namespace of the `Repository`."
+
+  - id: ats128-final-q15
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Approve a pull request from a user without rights"
+    source_readings:
+      - sections/section-030/module-02/course-01-comment-commands.md
+    prompt: "A user with no rights opens a pull request. Nothing runs. Who must write `/ok-to-test` for the runs to start?"
+    options:
+      - id: a
+        text: "The author of the pull request."
+        explanation: "Not correct. Only an allowed user can approve."
+      - id: b
+        text: "Any user who can read the repository."
+        explanation: "Not correct. Read access is not enough."
+      - id: c
+        text: "No one. The controller approves after one minute."
+        explanation: "Not correct. There is no timeout."
+      - id: d
+        text: "An allowed user, such as the owner or a collaborator."
+        explanation: "Correct. The author's own comment has no effect."
+    correct_option: d
+    explanation: "Correct. The author's own comment has no effect."
+
+  - id: ats128-final-q16
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Configure an incoming webhook"
+    source_readings:
+      - sections/section-030/module-02/course-03-incoming-webhooks.md
+    prompt: "Which `Repository` field configures a webhook that starts runs without a Git event?"
+    options:
+      - id: a
+        text: "`spec.incoming`"
+        explanation: "Correct. It holds the type, the secret, the targets and the params."
+      - id: b
+        text: "`spec.webhook`"
+        explanation: "Not correct. That field does not exist."
+      - id: c
+        text: "`spec.settings.incoming`"
+        explanation: "Not correct. It is a top-level `spec` field."
+      - id: d
+        text: "`spec.git_provider.incoming`"
+        explanation: "Not correct. It is not part of `git_provider`."
+    correct_option: a
+    explanation: "Correct. It holds the type, the secret, the targets and the params."

@@ -40,9 +40,9 @@ contains:
 
 | Section | Title | Modules | Labs | Topic |
 | --- | --- | --- | --- | --- |
-| [010](sections/section-010) | Install Pipelines-as-Code And Connect A Repository | 1 | 1 + capstone | Concepts and installation |
-| [020](sections/section-020) | The .tekton Directory And Event Matching | 1 | 1 + capstone | Event matching |
-| [030](sections/section-030) | Pull Request Status, Concurrency And Access Control | 1 | 1 + capstone | Status, concurrency, access control |
+| [010](sections/section-010) | Install Pipelines-as-Code And Connect A Repository | 2 | 2 + capstone | Concepts and installation |
+| [020](sections/section-020) | The .tekton Directory And Event Matching | 2 | 2 + capstone | Event matching |
+| [030](sections/section-030) | Pull Request Status, Concurrency And Access Control | 2 | 2 + capstone | Status, concurrency, access control |
 
 The order follows the life of a repository. Section 010 installs
 Pipelines-as-Code and connects a repository, so a pull request starts its
@@ -58,14 +58,20 @@ is allowed to start a run.
 | Module | Reader | Parts | Labs |
 | --- | --- | --- | --- |
 | 010-01 | [Connect A Git Repository To Pipelines-as-Code](sections/section-010/module-01/course.md) | 3 | [lab-01](sections/section-010/module-01/labs/lab-01) |
+| 010-02 | [Operate The Repository Connection](sections/section-010/module-02/course.md) | 4 | [lab-01](sections/section-010/module-02/labs/lab-01) |
 | 020-01 | [Write Pipelines In The .tekton Directory](sections/section-020/module-01/course.md) | 3 | [lab-01](sections/section-020/module-01/labs/lab-01) |
+| 020-02 | [Parameters, Secrets, Tasks And Resolving](sections/section-020/module-02/course.md) | 4 | [lab-01](sections/section-020/module-02/labs/lab-01) |
 | 030-01 | [Control How Pipeline Runs Report, Queue And Start](sections/section-030/module-01/course.md) | 3 | [lab-01](sections/section-030/module-01/labs/lab-01) |
+| 030-02 | [Comments, Incoming Webhooks And Troubleshooting](sections/section-030/module-02/course.md) | 4 | [lab-01](sections/section-030/module-02/labs/lab-01) |
 
 | Lab | Title | Kind | Faults or work |
 | --- | --- | --- | --- |
 | 010-01 | Connect A Gitea Repository To Pipelines-as-Code | build | install v0.52.0, Secret, `Repository`, Gitea webhook, open a pull request |
+| 010-02 | Run Pull Requests With The Pipeline From The Default Branch | troubleshooting | a pull request with a tampered pipeline; set `pipelinerun_provenance: default_branch` |
 | 020-01 | Fix The Event Matching Of A Pull Request Pipeline | troubleshooting | `on-event: "[pull-request]"`, `on-target-branch: "[master]"`, a fixed `revision: main` |
+| 020-02 | Define Custom Parameters On The Repository | troubleshooting | `{{ deploy_target }}` and `{{ log_level }}` have no value; add `params` and `/retest` |
 | 030-01 | Queue Pull Request Runs With concurrency_limit | build | two pipelines run in parallel; set `concurrency_limit: 1` and run them again |
+| 030-02 | Start A Pipeline With An Incoming Webhook | build | no `incoming` entry; add it with a Secret, target `main`, param `environment`, and call it |
 
 ---
 

@@ -240,3 +240,233 @@ questions:
         explanation: "Correct. The approval covers the current commit only."
     correct_option: d
     explanation: "Correct. The approval covers the current commit only."
+
+  - id: ats128-030-q11
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Use comment commands"
+    source_readings:
+      - sections/section-030/module-02/course-01-comment-commands.md
+    prompt: "A reviewer writes `/retest` on a pull request. Which pipelines run again?"
+    options:
+      - id: a
+        text: "Every pipeline, even those that succeeded."
+        explanation: "Not correct. Use `/test <name>` or `/retest <name>` to force one."
+      - id: b
+        text: "Only the pipelines that failed."
+        explanation: "Correct. `/retest <name>` forces one pipeline to run again."
+      - id: c
+        text: "Only the newest pipeline."
+        explanation: "Not correct. Failure decides, not age."
+      - id: d
+        text: "None. The command only posts a status."
+        explanation: "Not correct. It starts runs."
+    correct_option: b
+    explanation: "Correct. `/retest <name>` forces one pipeline to run again."
+
+  - id: ats128-030-q12
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Select one pipeline with a comment"
+    source_readings:
+      - sections/section-030/module-02/course-01-comment-commands.md
+    prompt: "Which comment forces only the pipeline `lint` to run, even if it succeeded?"
+    options:
+      - id: a
+        text: "`/lint`"
+        explanation: "Not correct. That is not a command."
+      - id: b
+        text: "`/cancel lint`"
+        explanation: "Not correct. That cancels it."
+      - id: c
+        text: "`/test lint`"
+        explanation: "Correct. The name is the `metadata.name` of the template."
+      - id: d
+        text: "`/ok-to-test lint`"
+        explanation: "Not correct. That approves a stranger's pull request."
+    correct_option: c
+    explanation: "Correct. The name is the `metadata.name` of the template."
+
+  - id: ats128-030-q13
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Approve a pull request from a user without rights"
+    source_readings:
+      - sections/section-030/module-02/course-01-comment-commands.md
+    prompt: "A user with no rights opens a pull request. Nothing runs. Who must write `/ok-to-test` for the runs to start?"
+    options:
+      - id: a
+        text: "The author of the pull request."
+        explanation: "Not correct. Only an allowed user can approve."
+      - id: b
+        text: "Any user who can read the repository."
+        explanation: "Not correct. Read access is not enough."
+      - id: c
+        text: "No one. The controller approves after one minute."
+        explanation: "Not correct. There is no timeout."
+      - id: d
+        text: "An allowed user, such as the owner or a collaborator."
+        explanation: "Correct. The author's own comment has no effect."
+    correct_option: d
+    explanation: "Correct. The author's own comment has no effect."
+
+  - id: ats128-030-q14
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Write an on-comment template"
+    source_readings:
+      - sections/section-030/module-02/course-02-run-from-a-comment.md
+    prompt: "Which annotation starts a template when a pull request comment matches a regular expression?"
+    options:
+      - id: a
+        text: "`pipelinesascode.tekton.dev/on-comment`"
+        explanation: "Correct. Anchor the expression with `^`."
+      - id: b
+        text: "`pipelinesascode.tekton.dev/on-event: [comment]`"
+        explanation: "Not correct. `comment` is not an event name for this."
+      - id: c
+        text: "`pipelinesascode.tekton.dev/on-label`"
+        explanation: "Not correct. That annotation does not exist."
+      - id: d
+        text: "`pipelinesascode.tekton.dev/on-text`"
+        explanation: "Not correct. That annotation does not exist."
+    correct_option: a
+    explanation: "Correct. Anchor the expression with `^`."
+
+  - id: ats128-030-q15
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Handle comment text safely"
+    source_readings:
+      - sections/section-030/module-02/course-02-run-from-a-comment.md
+    prompt: "A template uses `{{ trigger_comment }}`. How should the step read it?"
+    options:
+      - id: a
+        text: "Write `{{ trigger_comment }}` directly into the script."
+        explanation: "Not correct. A comment with shell syntax would run as a command."
+      - id: b
+        text: "Pass it through a parameter into an environment variable and read the variable."
+        explanation: "Correct. The comment is user input and must not be written into script text."
+      - id: c
+        text: "Write it into the image name."
+        explanation: "Not correct. That has the same risk."
+      - id: d
+        text: "Never use it."
+        explanation: "Not correct. It is safe through an environment variable."
+    correct_option: b
+    explanation: "Correct. The comment is user input and must not be written into script text."
+
+  - id: ats128-030-q16
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Configure an incoming webhook"
+    source_readings:
+      - sections/section-030/module-02/course-03-incoming-webhooks.md
+    prompt: "Which `Repository` field configures a webhook that starts runs without a Git event?"
+    options:
+      - id: a
+        text: "`spec.webhook`"
+        explanation: "Not correct. That field does not exist."
+      - id: b
+        text: "`spec.settings.incoming`"
+        explanation: "Not correct. It is a top-level `spec` field."
+      - id: c
+        text: "`spec.incoming`"
+        explanation: "Correct. It holds the type, the secret, the targets and the params."
+      - id: d
+        text: "`spec.git_provider.incoming`"
+        explanation: "Not correct. It is not part of `git_provider`."
+    correct_option: c
+    explanation: "Correct. It holds the type, the secret, the targets and the params."
+
+  - id: ats128-030-q17
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Know the event type of an incoming call"
+    source_readings:
+      - sections/section-030/module-02/course-03-incoming-webhooks.md
+    prompt: "Which `on-event` value must a template have to answer an incoming webhook?"
+    options:
+      - id: a
+        text: "`[push]`"
+        explanation: "Not correct. An incoming call is not a push."
+      - id: b
+        text: "`[webhook]`"
+        explanation: "Not correct. That is not an event name."
+      - id: c
+        text: "`[pull_request]`"
+        explanation: "Not correct. There is no pull request."
+      - id: d
+        text: "`[incoming]`"
+        explanation: "Correct. The run has the event type `incoming`."
+    correct_option: d
+    explanation: "Correct. The run has the event type `incoming`."
+
+  - id: ats128-030-q18
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "List what a caller can set"
+    source_readings:
+      - sections/section-030/module-02/course-03-incoming-webhooks.md
+    prompt: "The body of an incoming call sets a variable that is not in `incoming[].params`. What happens?"
+    options:
+      - id: a
+        text: "The variable is not used and stays as literal text."
+        explanation: "Correct. Only the listed names can be set by the caller."
+      - id: b
+        text: "The caller overrides it."
+        explanation: "Not correct. Unlisted names are ignored."
+      - id: c
+        text: "The call is retried."
+        explanation: "Not correct. The controller does not retry."
+      - id: d
+        text: "The Repository is changed."
+        explanation: "Not correct. A call never edits the object."
+    correct_option: a
+    explanation: "Correct. Only the listed names can be set by the caller."
+
+  - id: ats128-030-q19
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find why a run did not start"
+    source_readings:
+      - sections/section-030/module-02/course-04-why-a-run-did-not-start.md
+    prompt: "What is the first place to look when a push produces no run?"
+    options:
+      - id: a
+        text: "`max-keep-runs` of the template."
+        explanation: "Not correct. It acts after a run exists."
+      - id: b
+        text: "The webhook on the Git server: is it active, with the right URL and events?"
+        explanation: "Correct. Work from the Git server toward the cluster."
+      - id: c
+        text: "The Tekton Pipelines version."
+        explanation: "Not correct. Tekton is not involved before the run exists."
+      - id: d
+        text: "The node CPU."
+        explanation: "Not correct. That affects running, not creation."
+    correct_option: b
+    explanation: "Correct. Work from the Git server toward the cluster."
+
+  - id: ats128-030-q20
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Read a queued run"
+    source_readings:
+      - sections/section-030/module-02/course-04-why-a-run-did-not-start.md
+    prompt: "A PipelineRun exists but does not run. `concurrency_limit: 1` is set and another run is going. What is the state?"
+    options:
+      - id: a
+        text: "The run failed."
+        explanation: "Not correct. It has not started."
+      - id: b
+        text: "The webhook was refused."
+        explanation: "Not correct. The run was created."
+      - id: c
+        text: "The run is queued and starts when a slot is free."
+        explanation: "Correct. It is not broken."
+      - id: d
+        text: "The template is invalid."
+        explanation: "Not correct. An invalid template creates no run."
+    correct_option: c
+    explanation: "Correct. It is not broken."

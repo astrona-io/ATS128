@@ -1,0 +1,37 @@
+# Pipelines-as-Code runs this PipelineRun when somebody writes the comment
+# /status-report on a pull request. The comment text is available to the
+# template as the dynamic variable trigger_comment.
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: status-report
+  annotations:
+    pipelinesascode.tekton.dev/on-comment: "^/status-report"
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+spec:
+  params:
+    - name: comment
+      value: "{{ trigger_comment }}"
+  pipelineSpec:
+    params:
+      - name: comment
+        type: string
+    tasks:
+      - name: report
+        params:
+          - name: comment
+            value: $(params.comment)
+        taskSpec:
+          params:
+            - name: comment
+              type: string
+          steps:
+            - name: report
+              image: busybox:1.37.0
+              env:
+                - name: COMMENT
+                  value: $(params.comment)
+              script: |
+                #!/bin/sh
+                set -eu
+                echo "The comment was: $COMMENT"

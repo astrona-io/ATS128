@@ -17,7 +17,7 @@ You first learn how Pipelines-as-Code reads the folder and turns a template into
 
 ## The learning path
 
-The section has one module. It has a landing page, three short parts, a graded lab right after the part it tests, and a summary. The module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
+The section has two modules. It has a landing page, three short parts, a graded lab right after the part it tests, and a summary. Each module also has its own playground, a cluster where you can explore freely, and the landing page starts it for you.
 
 ### 1. Write Pipelines In The .tekton Directory
 
@@ -27,6 +27,16 @@ The module starts at its landing page, which also launches the playground. The p
 2. Match Events And Branches With Annotations, followed by the lab **Fix The Event Matching Of A Pull Request Pipeline**
 3. CEL Expressions, Path Changes And Cleanup
 4. Summary
+
+### 2. Parameters, Secrets, Tasks And Resolving
+
+The second module has a landing page, four parts, a graded lab, and a summary. It has its own playground with a connected Gitea repository.
+
+1. Custom Parameters On The Repository, followed by the lab **Define Custom Parameters On The Repository**
+2. Secrets And The Git Provider Token In A Run
+3. Local And Remote Tasks And Pipelines
+4. Resolve Templates And Find Authoring Errors
+5. Summary
 
 ## Section capstone: Route Push Pipelines By Branch
 

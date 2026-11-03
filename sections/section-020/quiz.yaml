@@ -240,3 +240,233 @@ questions:
         explanation: "Not correct. Changed files are not used to resolve the clash."
     correct_option: c
     explanation: "Correct. The error is \"found multiple pipelinerun in .tekton with the same name\"."
+
+  - id: ats128-020-q11
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Define custom parameters"
+    source_readings:
+      - sections/section-020/module-02/course-01-custom-parameters.md
+    prompt: "Where do you define a custom parameter that a template reads as `{{ deploy_target }}`?"
+    options:
+      - id: a
+        text: "In the ConfigMap `pipelines-as-code`."
+        explanation: "Not correct. That ConfigMap holds installation settings."
+      - id: b
+        text: "In `spec.params` of the `Repository`."
+        explanation: "Correct. The controller fills the value in before it creates the PipelineRun."
+      - id: c
+        text: "In the `on-event` annotation."
+        explanation: "Not correct. That annotation selects events."
+      - id: d
+        text: "In a Tekton `Pipeline` default."
+        explanation: "Not correct. Tekton variables use `$(params.name)`."
+    correct_option: b
+    explanation: "Correct. The controller fills the value in before it creates the PipelineRun."
+
+  - id: ats128-020-q12
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read an unreplaced variable"
+    source_readings:
+      - sections/section-020/module-02/course-01-custom-parameters.md
+    prompt: "A run starts, but a parameter holds the text `{{ deploy_target }}`. What does that show?"
+    options:
+      - id: a
+        text: "The CRD is missing."
+        explanation: "Not correct. The run was created."
+      - id: b
+        text: "Tekton failed to start the pod."
+        explanation: "Not correct. Tekton never sees the braces replaced."
+      - id: c
+        text: "No custom parameter or built-in variable has that name for this event."
+        explanation: "Correct. Variables with no value stay as literal text."
+      - id: d
+        text: "The webhook secret is wrong."
+        explanation: "Not correct. A wrong secret stops the run from being created."
+    correct_option: c
+    explanation: "Correct. Variables with no value stay as literal text."
+
+  - id: ats128-020-q13
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Limit a parameter with a filter"
+    source_readings:
+      - sections/section-020/module-02/course-01-custom-parameters.md
+    prompt: "Which field gives a custom parameter a value only for certain events or branches?"
+    options:
+      - id: a
+        text: "`when`"
+        explanation: "Not correct. That field does not exist."
+      - id: b
+        text: "`on-event`"
+        explanation: "Not correct. That is an annotation of a template."
+      - id: c
+        text: "`secret_ref`"
+        explanation: "Not correct. That reads a value from a Secret."
+      - id: d
+        text: "`filter`, a CEL expression."
+        explanation: "Correct. It can use `pac.event_type` and `pac.target_branch`."
+    correct_option: d
+    explanation: "Correct. It can use `pac.event_type` and `pac.target_branch`."
+
+  - id: ats128-020-q14
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name dynamic variables"
+    source_readings:
+      - sections/section-020/module-02/course-01-custom-parameters.md
+    prompt: "Which variable holds the commit SHA of the event?"
+    options:
+      - id: a
+        text: "`{{ revision }}`"
+        explanation: "Correct. It is used to clone and test the right commit."
+      - id: b
+        text: "`{{ source_branch }}`"
+        explanation: "Not correct. That is the branch name."
+      - id: c
+        text: "`{{ sender }}`"
+        explanation: "Not correct. That is the user who caused the event."
+      - id: d
+        text: "`{{ target_namespace }}`"
+        explanation: "Not correct. That is the namespace of the run."
+    correct_option: a
+    explanation: "Correct. It is used to clone and test the right commit."
+
+  - id: ats128-020-q15
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Pass a Secret value to a run"
+    source_readings:
+      - sections/section-020/module-02/course-02-secrets-and-git-token.md
+    prompt: "How does a `Repository` parameter take its value from a Secret?"
+    options:
+      - id: a
+        text: "With `value: secret/name/key`."
+        explanation: "Not correct. That is not a reference."
+      - id: b
+        text: "With `secret_ref`, giving the Secret `name` and `key`."
+        explanation: "Correct. The Secret must be in the namespace of the `Repository`."
+      - id: c
+        text: "With the annotation `secret` on the template."
+        explanation: "Not correct. No such annotation exists."
+      - id: d
+        text: "The controller copies every Secret automatically."
+        explanation: "Not correct. Only referenced Secrets are read."
+    correct_option: b
+    explanation: "Correct. The Secret must be in the namespace of the `Repository`."
+
+  - id: ats128-020-q16
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Know who can read a secret parameter"
+    source_readings:
+      - sections/section-020/module-02/course-02-secrets-and-git-token.md
+    prompt: "A parameter from `secret_ref` is passed to a run. Who can read the value?"
+    options:
+      - id: a
+        text: "Nobody, because Kubernetes hides it."
+        explanation: "Not correct. Parameters are plain fields of the object."
+      - id: b
+        text: "Only the controller."
+        explanation: "Not correct. The run object holds the value."
+      - id: c
+        text: "Anyone who can read PipelineRuns in the namespace, because the value is stored in the run."
+        explanation: "Correct. Mounting the Secret in the step protects it better."
+      - id: d
+        text: "Only cluster administrators."
+        explanation: "Not correct. Namespace readers can see it."
+    correct_option: c
+    explanation: "Correct. Mounting the Secret in the step protects it better."
+
+  - id: ats128-020-q17
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Clone a private repository"
+    source_readings:
+      - sections/section-020/module-02/course-02-secrets-and-git-token.md
+    prompt: "Which variable names the Secret that holds a provider token for cloning a private repository?"
+    options:
+      - id: a
+        text: "`{{ repo_token }}`"
+        explanation: "Not correct. That variable does not exist."
+      - id: b
+        text: "`{{ webhook_secret }}`"
+        explanation: "Not correct. That is the signing secret."
+      - id: c
+        text: "`{{ sender }}`"
+        explanation: "Not correct. That is a user name."
+      - id: d
+        text: "`{{ git_auth_secret }}`"
+        explanation: "Correct. Pass it to a clone step as a workspace."
+    correct_option: d
+    explanation: "Correct. Pass it to a clone step as a workspace."
+
+  - id: ats128-020-q18
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use a Task from the .tekton folder"
+    source_readings:
+      - sections/section-020/module-02/course-03-local-and-remote-tasks.md
+    prompt: "A template uses `taskRef: {name: print-status}`. Where does Pipelines-as-Code find that Task?"
+    options:
+      - id: a
+        text: "In a `Task` file named `print-status` in the `.tekton` folder, or in a fetched source named by the `task` annotation."
+        explanation: "Correct. It embeds the Task before it creates the PipelineRun."
+      - id: b
+        text: "In any namespace of the cluster."
+        explanation: "Not correct. The controller looks in the repository files."
+      - id: c
+        text: "In the Tekton Dashboard."
+        explanation: "Not correct. The Dashboard is not a source."
+      - id: d
+        text: "In the `Repository` object."
+        explanation: "Not correct. The object holds no Tasks."
+    correct_option: a
+    explanation: "Correct. It embeds the Task before it creates the PipelineRun."
+
+  - id: ats128-020-q19
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Pin remote Tasks"
+    source_readings:
+      - sections/section-020/module-02/course-03-local-and-remote-tasks.md
+    prompt: "A `task` annotation points at a raw file on a moving branch. What is the risk?"
+    options:
+      - id: a
+        text: "The controller caches it forever."
+        explanation: "Not correct. It is fetched again."
+      - id: b
+        text: "The Task changes when someone pushes to that branch, so your pipeline changes without a review."
+        explanation: "Correct. Pin the address to a tag or a commit."
+      - id: c
+        text: "Tekton refuses remote Tasks."
+        explanation: "Not correct. The controller embeds them."
+      - id: d
+        text: "The Task runs in the wrong namespace."
+        explanation: "Not correct. The namespace is not affected."
+    correct_option: b
+    explanation: "Correct. Pin the address to a tag or a commit."
+
+  - id: ats128-020-q20
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Resolve a template locally"
+    source_readings:
+      - sections/section-020/module-02/course-04-resolve-and-author-errors.md
+    prompt: "Which command prints the PipelineRun that the controller would build from a template on your machine?"
+    options:
+      - id: a
+        text: "`tkn pipelinerun describe -f pull-request.yaml`"
+        explanation: "Not correct. That describes a run in the cluster."
+      - id: b
+        text: "`tkn pac logs pull-request.yaml`"
+        explanation: "Not correct. That prints run logs."
+      - id: c
+        text: "`tkn pac resolve -f pull-request.yaml -p revision=main --no-secret`"
+        explanation: "Correct. It embeds Tasks and fills the variables you give."
+      - id: d
+        text: "`kubectl explain pull-request.yaml`"
+        explanation: "Not correct. That explains API fields."
+    correct_option: c
+    explanation: "Correct. It embeds Tasks and fills the variables you give."
