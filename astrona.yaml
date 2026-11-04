@@ -13,7 +13,7 @@
 training:
   id: ATS128
   title: "Tekton: Pipelines-as-Code & Git-Native CI"
-  maturity: draft
+  maturity: alpha
   description: >
     Training material covering the Pipelines-as-Code & Git-Native CI domain
     of the Tekton training path: the Pipelines-as-Code model (PipelineRuns
