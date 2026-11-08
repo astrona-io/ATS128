@@ -1,12 +1,13 @@
 # Course manifest for ATS128 - Pipelines-as-Code & Git-Native CI (Tekton).
 #
-# One entry per section under `modules:`. Each section lists, in order: its
-# README, then for each module the landing page (course.md), its parts
-# (course-0N-*.md), and right after the part a lab tests, the lab's
-# question.md reading and the `type: lab` entry. The module's summary page
-# comes last. The section capstone closes the section. Playgrounds are not
-# listed: the landing page's playground marker shows them. solution.md is
-# never listed.
+# One entry per module under `modules:`, in section order. A module lists,
+# in order: the section README when it opens a section, its landing page
+# (course.md), its parts (course-0N-*.md), and right after the part a lab
+# tests, the lab's question.md reading and the `type: lab` entry. The
+# module's summary page and knowledge check come last. The last module of a
+# section also carries the section capstone and the section knowledge check.
+# Playgrounds are not listed: the playground marker on the landing page shows
+# them. solution.md is never listed.
 #
 # Every `path:` is relative to this file.
 
@@ -59,15 +60,15 @@ modules:
         title: "How This Course Is Made"
         path: sections/intro/course-03-how-this-course-is-made.md
 
-  - id: module-010
-    title: "Install Pipelines-as-Code And Connect A Repository"
+  - id: module-010-01
+    title: "Connect A Git Repository To Pipelines-as-Code"
     description: >
-      The Pipelines-as-Code model and its components, the Repository custom
-      resource, GitHub App, GitHub webhook and the other Git providers,
-      installing Pipelines-as-Code and the tkn pac plugin from the release,
-      and connecting a Gitea repository with a token, a webhook secret and a
-      webhook so that a pull request starts a PipelineRun and gets a commit
-      status.
+      Module 1 of 3 in Install Pipelines-as-Code And Connect A Repository.
+      Parts: What Pipelines-as-Code Is And How Events Become Runs; Install
+      Pipelines-as-Code And The tkn pac Plugin; Connect A Repository With A
+      Token And A Webhook; Check A Connected Repository End To End. Graded
+      lab: Connect A Gitea Repository To Pipelines-as-Code. Opens with the
+      section overview.
 
     content:
       - type: reading
@@ -115,6 +116,17 @@ modules:
         title: Summary
         path: sections/section-010/module-01/course-05-summary.md
 
+  - id: module-010-02
+    title: "Operate The Repository Connection"
+    description: >
+      Module 2 of 3 in Install Pipelines-as-Code And Connect A Repository.
+      Parts: The Repository Object In Detail; Global Settings In The
+      pipelines-as-code ConfigMap; Tokens, Webhook Events And The tkn pac
+      Commands; Choose Where Pipeline Definitions Come From; Namespaces,
+      ServiceAccounts And Quotas For A Repository. Graded lab: Run Pull
+      Requests With The Pipeline From The Default Branch.
+
+    content:
       - type: reading
         title: "Operate The Repository Connection"
         path: sections/section-010/module-02/course.md
@@ -157,6 +169,15 @@ modules:
         title: Summary
         path: sections/section-010/module-02/course-06-summary.md
 
+  - id: module-010-03
+    title: "Connect Other Git Providers"
+    description: >
+      Module 3 of 3 in Install Pipelines-as-Code And Connect A Repository.
+      Parts: The GitHub App; The GitHub Webhook; GitLab; Bitbucket Cloud And
+      Bitbucket Data Center. Closes the section with its capstone lab and
+      section knowledge check.
+
+    content:
       - type: reading
         title: "Connect Other Git Providers"
         path: sections/section-010/module-03/course.md
@@ -203,14 +224,14 @@ modules:
         path: sections/section-010/quiz.yaml
         pass_score: 70
 
-  - id: module-020
-    title: "The .tekton Directory And Event Matching"
+  - id: module-020-01
+    title: "Write Pipelines In The .tekton Directory"
     description: >
-      How Pipelines-as-Code reads PipelineRun templates from the .tekton
-      directory, dynamic variables such as revision and source_url, matching
-      events and branches with on-event and on-target-branch, branch globs,
-      push and tag events, CEL expressions, path changes, remote tasks and
-      cleanup with max-keep-runs.
+      Module 1 of 2 in The .tekton Directory And Event Matching. Parts: The
+      .tekton Directory And Dynamic Variables; Match Events And Branches With
+      Annotations; CEL Expressions, Path Changes And Cleanup; Tags And Release
+      Branches. Graded lab: Fix The Event Matching Of A Pull Request Pipeline.
+      Opens with the section overview.
 
     content:
       - type: reading
@@ -256,6 +277,17 @@ modules:
         title: Summary
         path: sections/section-020/module-01/course-05-summary.md
 
+  - id: module-020-02
+    title: "Parameters, Secrets, Tasks And Resolving"
+    description: >
+      Module 2 of 2 in The .tekton Directory And Event Matching. Parts: Custom
+      Parameters On The Repository; Secrets And The Git Provider Token In A
+      Run; Local And Remote Tasks And Pipelines; Resolve Templates And Find
+      Authoring Errors; Share One Pipeline Between Repositories. Graded lab:
+      Define Custom Parameters On The Repository. Closes the section with its
+      capstone lab and section knowledge check.
+
+    content:
       - type: reading
         title: "Parameters, Secrets, Tasks And Resolving"
         path: sections/section-020/module-02/course.md
@@ -325,14 +357,14 @@ modules:
         path: sections/section-020/quiz.yaml
         pass_score: 70
 
-  - id: module-030
-    title: "Pull Request Status, Concurrency And Access Control"
+  - id: module-030-01
+    title: "Control How Pipeline Runs Report, Queue And Start"
     description: >
-      How Pipelines-as-Code reports results back to the Git provider (GitHub
-      checks, commit statuses and pull request comments), reading runs with
-      tkn pac, limiting parallel runs with concurrency_limit, cancelling old
-      runs, and deciding who may run pipelines: owners, collaborators, the
-      OWNERS file, /ok-to-test, /retest and /test.
+      Module 1 of 2 in Pull Request Status, Concurrency And Access Control.
+      Parts: How Pipelines-as-Code Reports Status; Queue Runs With
+      concurrency_limit; Control Who Can Run Pipelines; Cancel Runs That Are
+      No Longer Needed. Graded lab: Queue Pull Request Runs With
+      concurrency_limit. Opens with the section overview.
 
     content:
       - type: reading
@@ -378,6 +410,17 @@ modules:
         title: Summary
         path: sections/section-030/module-01/course-05-summary.md
 
+  - id: module-030-02
+    title: "Comments, Incoming Webhooks And Troubleshooting"
+    description: >
+      Module 2 of 2 in Pull Request Status, Concurrency And Access Control.
+      Parts: Comment Commands On A Pull Request; Run A Template From A
+      Comment; Incoming Webhooks; Find Out Why A Run Did Not Start; Act On
+      Runs From The Command Line. Graded lab: Start A Pipeline With An
+      Incoming Webhook. Closes the section with its capstone lab and section
+      knowledge check.
+
+    content:
       - type: reading
         title: "Comments, Incoming Webhooks And Troubleshooting"
         path: sections/section-030/module-02/course.md
