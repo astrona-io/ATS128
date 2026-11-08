@@ -449,12 +449,13 @@ every copy.
 ### Lab metadata in `astrona.yaml`
 
 `astrona.yaml` has a `training:` block (id `ATS128`, domain
-`Pipelines-as-Code & Git-Native CI`, weight `15`) and one entry per section
-under `modules:` (`module-010`, `module-020`, `module-030`). Each section's
-`content` lists, in order: the section `README.md`, then for each module its
+`Pipelines-as-Code & Git-Native CI`, weight `15`) and one entry per module under `modules:`, in section order (`module-010-01`,
+`module-010-02`, ..., `module-020-01`, ...). A module's `content` lists, in
+order: the section `README.md` when the module opens a section, then its
 landing page, its parts, and right after the part a lab tests, a `Question`
 reading (`labs/lab-01/question.md`) followed by the `type: lab` entry; the
-module's closing page comes last. The section capstone closes the section.
+module's closing page comes last. The last module of a section also carries the section capstone and the
+section knowledge check.
 Playgrounds are not listed.
 
 Every `type: lab` entry carries the same fields, in the same order, as in
