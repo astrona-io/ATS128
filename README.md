@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://astrona.io/courses/tekton">
+    <img src="https://astrona.io/courses/tekton/domains/ATS128.svg" alt="ATS128: Pipelines-as-Code & Git-Native CI, part of the Tekton course on Astrona" width="100%">
+  </a>
+</p>
+
 # ATS128 — Pipelines-as-Code & Git-Native CI (Tekton)
 
 Course material for the **Pipelines-as-Code & Git-Native CI** domain of the
